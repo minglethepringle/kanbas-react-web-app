@@ -1,14 +1,24 @@
+import { useParams } from "react-router";
+import * as db from "../../Database";
+import { Link } from "react-router-dom";
+
 export default function AssignmentEditor() {
+    const { cid, aid } = useParams();
+    const assignment = db.assignments.find((assignment: any) => assignment._id === aid);
+
+    if (!assignment)
+        return <div>Assignment not found!</div>;
+
     return (
         <div id="wd-assignments-editor">
             <div className="mb-3">
                 <label htmlFor="wd-name" className="form-label">Assignment Name</label>
-                <input className="form-control" id="wd-name" value="A1 - ENV + HTML" />
+                <input className="form-control" id="wd-name" value={assignment.title} />
             </div>
 
             <div className="mb-3">
                 <textarea className="form-control" id="wd-description" rows={10} cols={50}>
-                    The assignment is available online Submit a link to the landing page of your Web application running on Netlify.
+                    {assignment.description}
                 </textarea>
             </div>
 
@@ -18,7 +28,7 @@ export default function AssignmentEditor() {
                         <label className="form-label float-end" htmlFor="wd-points">Points</label>
                     </div>
                     <div className="col-8">
-                        <input className="form-control" id="wd-points" value={100} />
+                        <input className="form-control" id="wd-points" value={assignment.points} />
                     </div>
                 </div>
 
@@ -93,17 +103,17 @@ export default function AssignmentEditor() {
                             <div className="row mb-3">
                                 <div className="col">
                                     <label className="form-label" htmlFor="wd-due-date"><b>Due</b></label>
-                                    <input className="form-control" type="date" id="wd-due-date" value="2024-05-13" />
+                                    <input className="form-control" type="date" id="wd-due-date" value={assignment.dueDate} />
                                 </div>
                             </div>
                             <div className="row mb-3">
                                 <div className="col-6">
                                     <label className="form-label" htmlFor="wd-available-from"><b>Available from</b></label>
-                                    <input className="form-control" type="date" id="wd-available-from" value="2024-05-06" />
+                                    <input className="form-control" type="date" id="wd-available-from" value={assignment.availableDate} />
                                 </div>
                                 <div className="col-6">
                                     <label className="form-label" htmlFor="wd-available-until"><b>Until</b></label>
-                                    <input className="form-control" type="date" id="wd-available-until" value="2024-05-20" />
+                                    <input className="form-control" type="date" id="wd-available-until" value="" />
                                 </div>
                             </div>
                         </div>
@@ -117,10 +127,12 @@ export default function AssignmentEditor() {
                     <div className="col-8">
                         <div>
                             <hr />
-                            <button id="wd-assignment-editor-save" className="btn btn-lg btn-danger me-1 float-end">
-                                Save</button>
-                            <button id="wd-assignment-editor-cancel" className="btn btn-lg btn-secondary me-1 float-end">
-                                Cancel</button>
+                            <Link to={`/Kanbas/Courses/${cid}/Assignments`} id="wd-assignment-editor-save" className="btn btn-lg btn-danger me-1 float-end">
+                                Save
+                            </Link>
+                            <Link to={`/Kanbas/Courses/${cid}/Assignments`} id="wd-assignment-editor-cancel" className="btn btn-lg btn-secondary me-1 float-end">
+                                Cancel      
+                            </Link>
                         </div>
                     </div>
                 </div>
