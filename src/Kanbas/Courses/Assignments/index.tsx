@@ -6,8 +6,12 @@ import LessonControlButtons from "../Modules/LessonControlButtons";
 import ModuleControlButtons from "../Modules/ModuleControlButtons";
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "../Modules/GreenCheckmark";
+import { useParams } from "react-router";
+import * as db from "../../Database";
 
 export default function Assignments() {
+    const { cid } = useParams();
+    const assignments = db.assignments.filter((assignment: any) => assignment.course === cid);
     return (
         <div id="wd-assignments">
             <div className="row mb-4">
@@ -46,60 +50,27 @@ export default function Assignments() {
                         </div>
                     </div>
                     <ul className="wd-lessons list-group rounded-0 ">
-                        <li className="wd-lesson list-group-item p-3 ps-1 d-flex">
-                            <div className="col-1">
-                                <BsGripVertical className="me-2 fs-3" />
-                                <SlNotebook className="text-success me-3" />
-                            </div>
-                            <div className="col">
-                                <h3>
-                                    <a className="wd-assignment-link text-decoration-none text-dark"
-                                        href="#/Kanbas/Courses/1234/Assignments/125">
-                                        A1
-                                    </a>
-                                </h3>
-                                <span className="text-danger">Multiple Modules</span> | <b>Not available until</b> May 6 at 12:00am | <b>Due</b> May 13 at 11:59pm | 100 pts
-                            </div>
-                            <div className="col-1">
-                                <LessonControlButtons />
-                            </div>
-                        </li>
-                        <li className="wd-lesson list-group-item p-3 ps-1 d-flex">
-                            <div className="col-1">
-                                <BsGripVertical className="me-2 fs-3" />
-                                <SlNotebook className="text-success me-3" />
-                            </div>
-                            <div className="col">
-                                <h3>
-                                    <a className="wd-assignment-link text-decoration-none text-dark"
-                                        href="#/Kanbas/Courses/1234/Assignments/125">
-                                        A2
-                                    </a>
-                                </h3>
-                                <span className="text-danger">Multiple Modules</span> | <b>Not available until</b> May 6 at 12:00am | <b>Due</b> May 13 at 11:59pm | 100 pts
-                            </div>
-                            <div className="col-1">
-                                <LessonControlButtons />
-                            </div>
-                        </li>
-                        <li className="wd-lesson list-group-item p-3 ps-1 d-flex">
-                            <div className="col-1">
-                                <BsGripVertical className="me-2 fs-3" />
-                                <SlNotebook className="text-success me-3" />
-                            </div>
-                            <div className="col">
-                                <h3>
-                                    <a className="wd-assignment-link text-decoration-none text-dark"
-                                        href="#/Kanbas/Courses/1234/Assignments/125">
-                                        A3
-                                    </a>
-                                </h3>
-                                <span className="text-danger">Multiple Modules</span> | <b>Not available until</b> May 6 at 12:00am | <b>Due</b> May 13 at 11:59pm | 100 pts
-                            </div>
-                            <div className="col-1">
-                                <LessonControlButtons />
-                            </div>
-                        </li>
+                        {
+                            assignments.map((assignment: any) => (
+                                <li className="wd-lesson list-group-item p-3 ps-1 d-flex">
+                                    <div className="col-1">
+                                        <BsGripVertical className="me-2 fs-3" />
+                                        <SlNotebook className="text-success me-3" />
+                                    </div>
+                                    <div className="col">
+                                        <h3>
+                                            <a className="wd-assignment-link text-decoration-none text-dark"
+                                                href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
+                                                {assignment.title}
+                                            </a>
+                                        </h3>
+                                        <span className="text-danger">Multiple Modules</span> | <b>Not available until</b> May 6 at 12:00am | <b>Due</b> May 13 at 11:59pm | 100 pts
+                                    </div>
+                                    <div className="col-1">
+                                        <LessonControlButtons />
+                                    </div>
+                                </li>
+                            ))}
                     </ul>
                 </li>
             </ul>
