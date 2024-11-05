@@ -8,6 +8,7 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import { useParams } from "react-router";
 import * as db from "../../Database";
+import ProtectedAdminContent from "../../ProtectedAdminContent";
 
 export default function Assignments() {
     const { cid } = useParams();
@@ -26,12 +27,14 @@ export default function Assignments() {
                     </div>
                 </div>
                 <div className="col-6">
-                    <button id="wd-add-assignment" className="btn btn-lg btn-danger me-1 float-end">
-                        <FaPlus className="me-2" />
-                        Assignment</button>
-                    <button id="wd-add-assignment-group" className="btn btn-lg btn-secondary me-1 float-end">
-                        <FaPlus className="me-2" />
-                        Group</button>
+                    <ProtectedAdminContent>
+                        <button id="wd-add-assignment" className="btn btn-lg btn-danger me-1 float-end">
+                            <FaPlus className="me-2" />
+                            Assignment</button>
+                        <button id="wd-add-assignment-group" className="btn btn-lg btn-secondary me-1 float-end">
+                            <FaPlus className="me-2" />
+                            Group</button>
+                    </ProtectedAdminContent>
                 </div>
             </div>
 
