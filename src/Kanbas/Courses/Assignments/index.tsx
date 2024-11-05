@@ -9,10 +9,13 @@ import GreenCheckmark from "../Modules/GreenCheckmark";
 import { useParams } from "react-router";
 import * as db from "../../Database";
 import ProtectedAdminContent from "../../ProtectedAdminContent";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 export default function Assignments() {
     const { cid } = useParams();
-    const assignments = db.assignments.filter((assignment: any) => assignment.course === cid);
+    const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+    const courseAssignments = assignments.filter((assignment: any) => assignment.course === cid);
     return (
         <div id="wd-assignments">
             <div className="row mb-4">
@@ -28,9 +31,10 @@ export default function Assignments() {
                 </div>
                 <div className="col-6">
                     <ProtectedAdminContent>
-                        <button id="wd-add-assignment" className="btn btn-lg btn-danger me-1 float-end">
+                        <Link id="wd-add-assignment" className="btn btn-lg btn-danger me-1 float-end"
+                            to={`/Kanbas/Courses/${cid}/Assignments/new`}>
                             <FaPlus className="me-2" />
-                            Assignment</button>
+                            Assignment</Link>
                         <button id="wd-add-assignment-group" className="btn btn-lg btn-secondary me-1 float-end">
                             <FaPlus className="me-2" />
                             Group</button>
@@ -54,7 +58,7 @@ export default function Assignments() {
                     </div>
                     <ul className="wd-lessons list-group rounded-0 ">
                         {
-                            assignments.map((assignment: any) => (
+                            courseAssignments.map((assignment: any) => (
                                 <li className="wd-lesson list-group-item p-3 ps-1 d-flex">
                                     <div className="col-1">
                                         <BsGripVertical className="me-2 fs-3" />
