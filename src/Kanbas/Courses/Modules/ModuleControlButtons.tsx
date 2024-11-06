@@ -3,15 +3,15 @@ import { BsPlus } from "react-icons/bs";
 import GreenCheckmark from "./GreenCheckmark";
 import { FaTrash } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
-import ProtectedAdminContent from "../../ProtectedAdminContent";
+import ProtectedRoleContent from "../../Security/ProtectedRoleContent";
 
 export default function ModuleControlButtons({ moduleId, deleteModule, editModule }: { moduleId: string; deleteModule: (moduleId: string) => void; editModule: (moduleId: string) => void; }) {
     return (
         <div className="float-end">
-            <ProtectedAdminContent>
+            <ProtectedRoleContent role="FACULTY">
                 <FaPencil onClick={() => editModule(moduleId)} className="text-primary me-3" />
                 <FaTrash className="text-danger me-2 mb-1" onClick={() => deleteModule(moduleId)} />
-            </ProtectedAdminContent>
+            </ProtectedRoleContent>
             <GreenCheckmark />
             <BsPlus />
             <IoEllipsisVertical className="fs-4" />

@@ -8,7 +8,7 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import { useParams } from "react-router";
 import * as db from "../../Database";
-import ProtectedAdminContent from "../../ProtectedAdminContent";
+import ProtectedRoleContent from "../../Security/ProtectedRoleContent";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { deleteAssignment } from "./reducer";
@@ -35,7 +35,7 @@ export default function Assignments() {
                     </div>
                 </div>
                 <div className="col-6">
-                    <ProtectedAdminContent>
+                    <ProtectedRoleContent role="FACULTY">
                         <Link id="wd-add-assignment" className="btn btn-lg btn-danger me-1 float-end"
                             to={`/Kanbas/Courses/${cid}/Assignments/new`}>
                             <FaPlus className="me-2" />
@@ -43,7 +43,7 @@ export default function Assignments() {
                         <button id="wd-add-assignment-group" className="btn btn-lg btn-secondary me-1 float-end">
                             <FaPlus className="me-2" />
                             Group</button>
-                    </ProtectedAdminContent>
+                    </ProtectedRoleContent>
                 </div>
             </div>
 
@@ -80,9 +80,9 @@ export default function Assignments() {
                                     </div>
                                     <div className="col-1">
                                         <LessonControlButtons />
-                                        <ProtectedAdminContent>
+                                        <ProtectedRoleContent role="FACULTY">
                                             <FaTrash className="text-danger me-2 mt-1 float-end" data-bs-toggle="modal" data-bs-target="#wd-delete-assignment-dialog" onClick={() => setAidToDelete(assignment._id) } />
-                                        </ProtectedAdminContent>
+                                        </ProtectedRoleContent>
                                     </div>
                                 </li>
                             ))}
@@ -90,7 +90,7 @@ export default function Assignments() {
                 </li>
             </ul>
 
-            <ProtectedAdminContent>
+            <ProtectedRoleContent role="FACULTY">
                 <div id="wd-delete-assignment-dialog" className="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -111,7 +111,7 @@ export default function Assignments() {
                         </div>
                     </div>
                 </div>
-            </ProtectedAdminContent>
+            </ProtectedRoleContent>
         </div>
     );
 }

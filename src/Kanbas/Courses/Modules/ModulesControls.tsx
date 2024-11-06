@@ -3,13 +3,13 @@ import GreenCheckmark from "./GreenCheckmark";
 import { FaBan } from "react-icons/fa";
 import ModuleEditor from "./ModuleEditor";
 import { useSelector } from "react-redux";
-import ProtectedAdminContent from "../../ProtectedAdminContent";
+import ProtectedRoleContent from "../../Security/ProtectedRoleContent";
 export default function ModulesControls(
     { moduleName, setModuleName, addModule }:
         { moduleName: string; setModuleName: (title: string) => void; addModule: () => void; }) {
     return (
         <div id="wd-modules-controls" className="text-nowrap">
-            <ProtectedAdminContent>
+            <ProtectedRoleContent role="FACULTY">
                 <button id="wd-add-module-btn" className="btn btn-lg btn-danger me-1 float-end" data-bs-toggle="modal" data-bs-target="#wd-add-module-dialog">
                     <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
                     Module</button>
@@ -41,17 +41,17 @@ export default function ModulesControls(
                         </li>
                     </ul>
                 </div>
-            </ProtectedAdminContent>
+            </ProtectedRoleContent>
 
             <button id="wd-view-progress" className="btn btn-lg btn-secondary me-1 float-end">
                 View Progress</button>
             <button id="wd-collapse-all" className="btn btn-lg btn-secondary me-1 float-end">
                 Collapse All</button>
 
-            <ProtectedAdminContent>
+            <ProtectedRoleContent role="FACULTY">
                 <ModuleEditor dialogTitle="Add Module" moduleName={moduleName}
                     setModuleName={setModuleName} addModule={addModule} />
-            </ProtectedAdminContent>
+            </ProtectedRoleContent>
         </div>
     );
 }
