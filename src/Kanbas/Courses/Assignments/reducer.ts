@@ -11,7 +11,7 @@ const assignmentsSlice = createSlice({
             const newAssignment: any = {
                 // A + random 3 digit integer between 100 and 999
                 _id: "A" + Math.floor(Math.random() * 900 + 100),
-                title: assignment.name,
+                title: assignment.title,
                 course: assignment.course,
                 description: assignment.description,
                 points: assignment.points,
