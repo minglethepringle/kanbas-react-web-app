@@ -1,17 +1,26 @@
 import { BsGripVertical, BsPlus } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
 import { SlNotebook } from "react-icons/sl";
-import { FaPlus, FaSortDown } from "react-icons/fa";
+import { FaPlus, FaSortDown, FaTrash } from "react-icons/fa";
 import LessonControlButtons from "../Modules/LessonControlButtons";
 import ModuleControlButtons from "../Modules/ModuleControlButtons";
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import { useParams } from "react-router";
 import * as db from "../../Database";
+import ProtectedRoleContent from "../../Security/ProtectedRoleContent";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { deleteAssignment } from "./reducer";
+import { useState } from "react";
 
 export default function Assignments() {
     const { cid } = useParams();
-    const assignments = db.assignments.filter((assignment: any) => assignment.course === cid);
+    const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+    const courseAssignments = assignments.filter((assignment: any) => assignment.course === cid);
+    const [aidToDelete, setAidToDelete] = useState("");
+    const dispatch = useDispatch();
+
     return (
         <div id="wd-assignments">
             <div className="row mb-4">
@@ -26,12 +35,15 @@ export default function Assignments() {
                     </div>
                 </div>
                 <div className="col-6">
-                    <button id="wd-add-assignment" className="btn btn-lg btn-danger me-1 float-end">
-                        <FaPlus className="me-2" />
-                        Assignment</button>
-                    <button id="wd-add-assignment-group" className="btn btn-lg btn-secondary me-1 float-end">
-                        <FaPlus className="me-2" />
-                        Group</button>
+                    <ProtectedRoleContent role="FACULTY">
+                        <Link id="wd-add-assignment" className="btn btn-lg btn-danger me-1 float-end"
+                            to={`/Kanbas/Courses/${cid}/Assignments/new`}>
+                            <FaPlus className="me-2" />
+                            Assignment</Link>
+                        <button id="wd-add-assignment-group" className="btn btn-lg btn-secondary me-1 float-end">
+                            <FaPlus className="me-2" />
+                            Group</button>
+                    </ProtectedRoleContent>
                 </div>
             </div>
 
@@ -51,7 +63,7 @@ export default function Assignments() {
                     </div>
                     <ul className="wd-lessons list-group rounded-0 ">
                         {
-                            assignments.map((assignment: any) => (
+                            courseAssignments.map((assignment: any) => (
                                 <li className="wd-lesson list-group-item p-3 ps-1 d-flex">
                                     <div className="col-1">
                                         <BsGripVertical className="me-2 fs-3" />
@@ -59,21 +71,47 @@ export default function Assignments() {
                                     </div>
                                     <div className="col">
                                         <h3>
-                                            <a className="wd-assignment-link text-decoration-none text-dark"
-                                                href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
+                                            <Link className="wd-assignment-link text-decoration-none text-dark"
+                                                to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
                                                 {assignment.title}
-                                            </a>
+                                            </Link>
                                         </h3>
-                                        <span className="text-danger">Multiple Modules</span> | <b>Not available until</b> May 6 at 12:00am | <b>Due</b> May 13 at 11:59pm | 100 pts
+                                        <span className="text-danger">Multiple Modules</span> | <b>Not available until</b> {assignment.availableDate} | <b>Due</b> {assignment.dueDate} | {assignment.points} pts
                                     </div>
                                     <div className="col-1">
                                         <LessonControlButtons />
+                                        <ProtectedRoleContent role="FACULTY">
+                                            <FaTrash className="text-danger me-2 mt-1 float-end" data-bs-toggle="modal" data-bs-target="#wd-delete-assignment-dialog" onClick={() => setAidToDelete(assignment._id) } />
+                                        </ProtectedRoleContent>
                                     </div>
                                 </li>
                             ))}
                     </ul>
                 </li>
             </ul>
+
+            <ProtectedRoleContent role="FACULTY">
+                <div id="wd-delete-assignment-dialog" className="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h1 className="modal-title fs-5" id="staticBackdropLabel">
+                                    Are you sure? </h1>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div className="modal-body">
+                                <p>You're about to remove an assignment. Are you sure?</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                                    Cancel </button>
+                                <button onClick={() => {dispatch(deleteAssignment(aidToDelete))}} type="button" data-bs-dismiss="modal" className="btn btn-danger">
+                                    Delete </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ProtectedRoleContent>
         </div>
     );
 }

@@ -1,24 +1,69 @@
-import { useParams } from "react-router";
-import * as db from "../../Database";
+import { Router, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { addAssignment, updateAssignment } from "./reducer";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function AssignmentEditor() {
-    const { cid, aid } = useParams();
-    const assignment = db.assignments.find((assignment: any) => assignment._id === aid);
+    const [_id, setId] = useState("");
+    const [title, setTitle] = useState("");
+    const [course, setCourse] = useState("");
+    const [description, setDescription] = useState("");
+    const [points, setPoints] = useState(0);
+    const [dueDate, setDueDate] = useState("");
+    const [availableDate, setAvailableDate] = useState("");
 
-    if (!assignment)
-        return <div>Assignment not found!</div>;
+    const { cid, aid } = useParams();
+    const editing = aid !== "new";
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+
+    const existingAssignment = assignments.find((assignment: any) => assignment._id === aid);
+    if (existingAssignment && _id === "") {
+        setId(existingAssignment._id);
+        setTitle(existingAssignment.title);
+        setCourse(existingAssignment.course);
+        setDescription(existingAssignment.description);
+        setPoints(existingAssignment.points);
+        setDueDate(existingAssignment.dueDate);
+        setAvailableDate(existingAssignment.availableDate);
+    }
+
+    function handleSubmit() {
+        debugger;
+        const assignment = {
+            _id,
+            title,
+            course,
+            description,
+            points,
+            dueDate,
+            availableDate,
+        };
+
+        if (editing) {
+            dispatch(updateAssignment(assignment));
+        } else {
+            // Set course num if new assignment cuz it doesn't have by default
+            assignment.course = cid!;
+            dispatch(addAssignment(assignment));
+        }
+        
+        // Route back
+        navigate(`/Kanbas/Courses/${cid}/Assignments`);
+    }
 
     return (
         <div id="wd-assignments-editor">
             <div className="mb-3">
                 <label htmlFor="wd-name" className="form-label">Assignment Name</label>
-                <input className="form-control" id="wd-name" value={assignment.title} />
+                <input className="form-control" id="wd-name" value={title} onChange={(e) => setTitle(e.target.value)}/>
             </div>
 
             <div className="mb-3">
-                <textarea className="form-control" id="wd-description" rows={10} cols={50}>
-                    {assignment.description}
+                <textarea className="form-control" id="wd-description" rows={10} cols={50} onChange={(e) => setDescription(e.target.value)}>
+                    {description}
                 </textarea>
             </div>
 
@@ -28,7 +73,7 @@ export default function AssignmentEditor() {
                         <label className="form-label float-end" htmlFor="wd-points">Points</label>
                     </div>
                     <div className="col-8">
-                        <input className="form-control" id="wd-points" value={assignment.points} />
+                        <input className="form-control" id="wd-points" value={points} onChange={(e) => setPoints(Number(e.target.value))} />
                     </div>
                 </div>
 
@@ -103,13 +148,13 @@ export default function AssignmentEditor() {
                             <div className="row mb-3">
                                 <div className="col">
                                     <label className="form-label" htmlFor="wd-due-date"><b>Due</b></label>
-                                    <input className="form-control" type="date" id="wd-due-date" value={assignment.dueDate} />
+                                    <input className="form-control" type="date" id="wd-due-date" value={dueDate} onChange={(e) => setDueDate(e.target.value)}/>
                                 </div>
                             </div>
                             <div className="row mb-3">
                                 <div className="col-6">
                                     <label className="form-label" htmlFor="wd-available-from"><b>Available from</b></label>
-                                    <input className="form-control" type="date" id="wd-available-from" value={assignment.availableDate} />
+                                    <input className="form-control" type="date" id="wd-available-from" value={availableDate} onChange={(e) => setAvailableDate(e.target.value)}/>
                                 </div>
                                 <div className="col-6">
                                     <label className="form-label" htmlFor="wd-available-until"><b>Until</b></label>
@@ -127,9 +172,9 @@ export default function AssignmentEditor() {
                     <div className="col-8">
                         <div>
                             <hr />
-                            <Link to={`/Kanbas/Courses/${cid}/Assignments`} id="wd-assignment-editor-save" className="btn btn-lg btn-danger me-1 float-end">
+                            <button id="wd-assignment-editor-save" className="btn btn-lg btn-danger me-1 float-end" onClick={handleSubmit}>
                                 Save
-                            </Link>
+                            </button>
                             <Link to={`/Kanbas/Courses/${cid}/Assignments`} id="wd-assignment-editor-cancel" className="btn btn-lg btn-secondary me-1 float-end">
                                 Cancel      
                             </Link>
