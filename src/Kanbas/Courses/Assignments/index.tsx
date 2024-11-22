@@ -11,15 +11,29 @@ import * as db from "../../Database";
 import ProtectedRoleContent from "../../Security/ProtectedRoleContent";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { deleteAssignment } from "./reducer";
-import { useState } from "react";
+import { deleteAssignment, setAssignments } from "./reducer";
+import { useEffect, useState } from "react";
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
 
 export default function Assignments() {
     const { cid } = useParams();
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
-    const courseAssignments = assignments.filter((assignment: any) => assignment.course === cid);
     const [aidToDelete, setAidToDelete] = useState("");
     const dispatch = useDispatch();
+
+    const fetchAssignments = async () => {
+        const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+        dispatch(setAssignments(assignments));
+    };
+    useEffect(() => {
+        fetchAssignments();
+    }, []);
+
+    const removeAssignment = async () => {
+        await assignmentsClient.deleteAssignment(aidToDelete);
+        dispatch(deleteAssignment(aidToDelete));
+    }
 
     return (
         <div id="wd-assignments">
@@ -63,7 +77,7 @@ export default function Assignments() {
                     </div>
                     <ul className="wd-lessons list-group rounded-0 ">
                         {
-                            courseAssignments.map((assignment: any) => (
+                            assignments.map((assignment: any) => (
                                 <li className="wd-lesson list-group-item p-3 ps-1 d-flex">
                                     <div className="col-1">
                                         <BsGripVertical className="me-2 fs-3" />
@@ -105,7 +119,7 @@ export default function Assignments() {
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                                     Cancel </button>
-                                <button onClick={() => {dispatch(deleteAssignment(aidToDelete))}} type="button" data-bs-dismiss="modal" className="btn btn-danger">
+                                <button onClick={removeAssignment} type="button" data-bs-dismiss="modal" className="btn btn-danger">
                                     Delete </button>
                             </div>
                         </div>

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { addAssignment, updateAssignment } from "./reducer";
 import { useDispatch, useSelector } from "react-redux";
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
 
 export default function AssignmentEditor() {
     const [_id, setId] = useState("");
@@ -30,7 +32,7 @@ export default function AssignmentEditor() {
         setAvailableDate(existingAssignment.availableDate);
     }
 
-    function handleSubmit() {
+    async function handleSubmit() {
         debugger;
         const assignment = {
             _id,
@@ -43,10 +45,12 @@ export default function AssignmentEditor() {
         };
 
         if (editing) {
+            await assignmentsClient.updateAssignment(assignment)
             dispatch(updateAssignment(assignment));
         } else {
             // Set course num if new assignment cuz it doesn't have by default
             assignment.course = cid!;
+            await coursesClient.createAssignmentForCourse(cid!, assignment);
             dispatch(addAssignment(assignment));
         }
         
