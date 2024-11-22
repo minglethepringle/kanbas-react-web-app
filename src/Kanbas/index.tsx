@@ -15,11 +15,15 @@ import { useSelector } from "react-redux";
 
 export default function Kanbas() {
     const [courses, setCourses] = useState<any[]>([]);
+    const [allCourses, setAllCourses] = useState<any[]>([]);
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const fetchCourses = async () => {
         try {
             const courses = await userClient.findMyCourses();
             setCourses(courses);
+
+            const allCourses = await courseClient.fetchAllCourses();
+            setAllCourses(allCourses);
         } catch (error) {
             console.error(error);
         }
@@ -62,6 +66,7 @@ export default function Kanbas() {
                         <Route path="/Dashboard" element={<ProtectedRoute><Dashboard
                             courses={courses}
                             course={course}
+                            allCourses={allCourses}
                             setCourse={setCourse}
                             addNewCourse={addNewCourse}
                             deleteCourse={deleteCourse}

@@ -50,8 +50,8 @@ export default function AssignmentEditor() {
         } else {
             // Set course num if new assignment cuz it doesn't have by default
             assignment.course = cid!;
-            await coursesClient.createAssignmentForCourse(cid!, assignment);
-            dispatch(addAssignment(assignment));
+            const newAssignment = await coursesClient.createAssignmentForCourse(cid!, assignment);
+            dispatch(addAssignment(newAssignment));
         }
         
         // Route back
