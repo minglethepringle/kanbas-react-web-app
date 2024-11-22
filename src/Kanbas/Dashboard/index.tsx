@@ -75,7 +75,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                     {
                         courses
                             .map((course) => {
-                                if (showEnrollments && !isEnrolledInCourse(course._id)) return <></>;
+                                // if (showEnrollments && !isEnrolledInCourse(course._id)) return <></>;
 
                                 return (
                                     <div className="wd-dashboard-course col" style={{ width: "300px" }}>
