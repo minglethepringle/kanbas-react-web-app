@@ -48,6 +48,11 @@ export default function TOC() {
           GitHub Repo
         </a>
       </li>
+      <li className="nav-item">
+        <a id="wd-k" href="https://kanbas-node-server-app-wejn.onrender.com" className="nav-link">
+          Node Server
+        </a>
+      </li>
     </ul>
   );
 }
