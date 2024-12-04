@@ -5,12 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import ProtectedRoleContent from "../Security/ProtectedRoleContent";
 import { addEnrollment, deleteEnrollment, setEnrollments } from "./reducer";
 import * as enrollmentsClient from "./client";
-export default function Dashboard({ courses, course, allCourses, setCourse, addNewCourse,
-    deleteCourse, updateCourse }: {
-        courses: any[]; course: any; allCourses: any[]; setCourse: (course: any) => void;
-        addNewCourse: () => void; deleteCourse: (course: any) => void;
-        updateCourse: () => void;
-    }) {
+export default function Dashboard({ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrolling, setEnrolling, updateEnrollment }: {
+    courses: any[]; course: any; setCourse: (course: any) => void;
+    addNewCourse: () => void; deleteCourse: (course: any) => void;
+    updateCourse: () => void;
+    enrolling: boolean;
+    setEnrolling: (enrolling: boolean) => void;
+    updateEnrollment: (courseId: string, enrolled: boolean) => void;
+}) {
 
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
@@ -21,7 +23,7 @@ export default function Dashboard({ courses, course, allCourses, setCourse, addN
         const enrollments = await enrollmentsClient.getEnrollmentsForUser(currentUser?._id);
         dispatch(setEnrollments(enrollments));
     };
-    
+
     useEffect(() => {
         fetchEnrollments();
     }, []);
@@ -42,9 +44,9 @@ export default function Dashboard({ courses, course, allCourses, setCourse, addN
 
     async function unenrollCourse(courseId: string) {
         const enrollmentId = enrollments
-                .find((enrollment: { user: string, course: string }) =>
-                    enrollment.user === currentUser?._id && enrollment.course === courseId)
-                ._id;
+            .find((enrollment: { user: string, course: string }) =>
+                enrollment.user === currentUser?._id && enrollment.course === courseId)
+            ._id;
         await enrollmentsClient.deleteEnrollment(enrollmentId);
         dispatch(deleteEnrollment(enrollmentId));
     }
@@ -56,11 +58,9 @@ export default function Dashboard({ courses, course, allCourses, setCourse, addN
                     <h1 id="wd-dashboard-title">Dashboard</h1>
                 </div>
                 <div className="col">
-                    <ProtectedRoleContent role="STUDENT">
-                        <button className="btn btn-primary float-end" onClick={() => setShowEnrollments(!showEnrollments)}>
-                            Enrollments
-                        </button>
-                    </ProtectedRoleContent>
+                    <button onClick={() => setEnrolling(!enrolling)} className="float-end btn btn-primary" >
+                        {enrolling ? "My Courses" : "All Courses"}
+                    </button>
                 </div>
                 <hr />
             </div>
@@ -85,9 +85,7 @@ export default function Dashboard({ courses, course, allCourses, setCourse, addN
             <div id="wd-dashboard-courses" className="row">
                 <div className="row row-cols-1 row-cols-md-5 g-4">
                     {
-                        allCourses
-                            // if showEnrollments is on, only show courses that the user is enrolled in
-                            .filter((course) => showEnrollments ? isEnrolledInCourse(course._id) : true)
+                        courses
                             .map((course) => {
                                 return (
                                     <div className="wd-dashboard-course col" style={{ width: "300px" }}>
@@ -118,22 +116,14 @@ export default function Dashboard({ courses, course, allCourses, setCourse, addN
                                                             Edit
                                                         </button>
                                                     </ProtectedRoleContent>
-                                                    <ProtectedRoleContent role="STUDENT">
-                                                        {
-                                                            isEnrolledInCourse(course._id) ?
-                                                                <>
-                                                                    <button className="btn btn-danger mx-2" onClick={(e) => {e.preventDefault(); unenrollCourse(course._id)}}>
-                                                                        Unenroll
-                                                                    </button>
-                                                                </>
-                                                                :
-                                                                <>
-                                                                    <button className="btn btn-success mx-2" onClick={(e) => {e.preventDefault(); enrollCourse(course._id)}}>
-                                                                        Enroll
-                                                                    </button>
-                                                                </>
-                                                        }
-                                                    </ProtectedRoleContent>
+                                                    {enrolling && (
+                                                        <button onClick={(event) => {
+                                                            event.preventDefault();
+                                                            updateEnrollment(course._id, !course.enrolled);
+                                                        }} className={`btn ${course.enrolled ? "btn-danger" : "btn-success"} float-end`} >
+                                                            {course.enrolled ? "Unenroll" : "Enroll"}
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </Link>
                                         </div>
