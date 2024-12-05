@@ -9,6 +9,7 @@ import { Navigate, Route, Routes, useLocation, useParams } from "react-router";
 import PeopleTable from "./People/Table";
 import { useEffect, useState } from "react";
 import * as courseClient from "./client";
+import Quizzes from "./Quizzes";
 export default function Courses({ courses }: { courses: any[]; }) {
     const { cid } = useParams();
     const { pathname } = useLocation();
@@ -24,7 +25,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
     useEffect(() => {
         fetchCoursePeople();
     }, [cid]);
-    
+
     return (
         <div id="wd-courses">
             <h2 className="text-danger">
@@ -44,6 +45,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
                         <Route path="Assignments" element={<Assignments />} />
                         <Route path="Assignments/:aid" element={<AssignmentEditor />} />
                         <Route path="People" element={<PeopleTable users={coursePeople} />} />
+                        <Route path="Quizzes" element={<Quizzes />} />
                     </Routes>
                 </div></div>
         </div>

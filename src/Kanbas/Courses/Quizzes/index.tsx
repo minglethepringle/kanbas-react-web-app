@@ -2,15 +2,15 @@ import { BsGripVertical, BsPlus } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
 import { SlNotebook } from "react-icons/sl";
 import { FaPlus, FaSortDown, FaTrash } from "react-icons/fa";
-import LessonControlButtons from "../Courses/Modules/LessonControlButtons";
+import LessonControlButtons from "../Modules/LessonControlButtons";
 import { IoEllipsisVertical } from "react-icons/io5";
-import ProtectedRoleContent from "../Security/ProtectedRoleContent";
+import ProtectedRoleContent from "../../Security/ProtectedRoleContent";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { deleteQuiz, setQuizzes } from "./reducer";
-import * as coursesClient from "../Courses/client"
+import * as coursesClient from "../client"
 import * as quizzesClient from "./client"
 
 
