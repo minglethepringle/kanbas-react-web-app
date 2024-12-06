@@ -74,10 +74,10 @@ export default function Quizzes() {
                                         <h3>
                                             <Link className="wd-quiz-link text-decoration-none text-dark"
                                                 to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`}> {/* TODO IMPLEMENT TAKE QUIZ/EDIT QUIZ PAGE BASED ON ROLE */}
-                                                {quiz.title}
+                                                {quiz.details.title}
                                             </Link>
                                         </h3>
-                                        <b>Available Until</b> {quiz.availableDate} | <b>Due</b> {quiz.dueDate} | {quiz.points} pts | {quiz.questions.length}
+                                        <b>Available Until</b> {new Date(quiz.details.availableDate).toISOString().slice(0, 10)} | <b>Due</b> {new Date(quiz.details.dueDate).toISOString().slice(0, 10)} | {quiz.details.points} pts | {quiz.questions.length}
                                     </div>
                                     <div className="col-1">
                                         <LessonControlButtons />
