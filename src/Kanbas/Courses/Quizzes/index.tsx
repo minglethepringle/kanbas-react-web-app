@@ -50,7 +50,8 @@ export default function Quizzes() {
                         <Link id="wd-add-quiz" className="btn btn-lg btn-danger me-1 float-end"
                             to={`/Kanbas/Courses/${cid}/Quizzes/new`}> {/* TODO IMPLEMENT NEW QUIZZES PAGE */}
                             <FaPlus className="me-2" />
-                            Quiz</Link>
+                            Quiz
+                        </Link>
                     </ProtectedRoleContent>
                 </div>
             </div>
@@ -73,7 +74,7 @@ export default function Quizzes() {
                                     <div className="col">
                                         <h3>
                                             <Link className="wd-quiz-link text-decoration-none text-dark"
-                                                to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`}> {/* TODO IMPLEMENT TAKE QUIZ/EDIT QUIZ PAGE BASED ON ROLE */}
+                                                to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/details`}> {/* TODO IMPLEMENT TAKE QUIZ/EDIT QUIZ PAGE BASED ON ROLE */}
                                                 {quiz.details.title}
                                             </Link>
                                         </h3>
