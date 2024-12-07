@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import * as courseClient from "./client";
 import Quizzes from "./Quizzes";
 import QuizEditor from "./Quizzes/Editor";
+import QuizDetails from "./Quizzes/QuizDetails";
 export default function Courses({ courses }: { courses: any[]; }) {
     const { cid } = useParams();
     const { pathname } = useLocation();
@@ -31,7 +32,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
         <div id="wd-courses">
             <h2 className="text-danger">
                 <FaAlignJustify className="me-4 fs-4 mb-1" />
-                {course && course.name}  &gt; {pathname.split("/")[4]}
+                {course && course.name} &gt; {pathname.split("/")[4]}
             </h2>
             <hr />
             <div className="d-flex">
@@ -48,8 +49,10 @@ export default function Courses({ courses }: { courses: any[]; }) {
                         <Route path="People" element={<PeopleTable users={coursePeople} />} />
                         <Route path="Quizzes" element={<Quizzes />} />
                         <Route path="Quizzes/:qid" element={<QuizEditor />} />
+                        <Route path="Quizzes/:qid/details" element={<QuizDetails />} />
                     </Routes>
-                </div></div>
+                </div>
+            </div>
         </div>
     );
 }

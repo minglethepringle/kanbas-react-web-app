@@ -8,20 +8,20 @@ import * as quizzesClient from "./client";
 
 export default function QuizEditor() {
     const [_id, setId] = useState("");
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState("Quiz");
     const [course, setCourse] = useState("");
     const [description, setDescription] = useState("");
     const [points, setPoints] = useState(0);
-    const [quizType, setQuizType] = useState("GradedQuiz");
+    const [quizType, setQuizType] = useState("Graded Quiz");
     const [assignmentGroup, setAssignmentGroup] = useState("Quizzes");
     const [shuffleAnswers, setShuffleAnswers] = useState(false);
     const [timeLimit, setTimeLimit] = useState(0);
     const [multipleAttempts, setMultipleAttempts] = useState(false);
-    const [showCorrectAnswers, setShowCorrectAnswers] = useState(false);
+    const [showCorrectAnswers, setShowCorrectAnswers] = useState(true);
     const [accessCode, setAccessCode] = useState("");
     const [oneQuestionAtATime, setOneQuestionAtATime] = useState(false);
     const [webcamRequired, setWebCamRequired] = useState(false);
-    const [lockQuestionsAfterAnswering, setLockQuestionsAFterAnswering] = useState(false);
+    const [lockQuestionsAfterAnswering, setLockQuestionsAfterAnswering] = useState(false);
     const [dueDate, setDueDate] = useState("");
     const [availableDate, setAvailableDate] = useState("");
     const [untilDate, setUntilDate] = useState("");
@@ -50,7 +50,7 @@ export default function QuizEditor() {
         setAccessCode(existingQuiz.accessCode);
         setOneQuestionAtATime(existingQuiz.oneQuestionAtATime);
         setWebCamRequired(existingQuiz.webcamRequired);
-        setLockQuestionsAFterAnswering(existingQuiz.lockQuestionsAfterAnswering);
+        setLockQuestionsAfterAnswering(existingQuiz.lockQuestionsAfterAnswering);
         setDueDate(existingQuiz.dueDate);
         setAvailableDate(existingQuiz.availableDate);
         setUntilDate(existingQuiz.untilDate);
@@ -198,7 +198,7 @@ export default function QuizEditor() {
                             </div>
                             <div className="form-check my-3">
                                 <input className="form-check-input" type="checkbox" name="check-lock-questions-after-answering" id="wd-lock-questions-after-answering"
-                                    checked={lockQuestionsAfterAnswering} onChange={(e) => setLockQuestionsAFterAnswering(e.target.checked)} />
+                                    checked={lockQuestionsAfterAnswering} onChange={(e) => setLockQuestionsAfterAnswering(e.target.checked)} />
                                 <label className="form-check-label" htmlFor="wd-lock-questions-after-answering">Lock Questions After Answering</label>
                             </div>
                             <div className="form-check my-3">
@@ -252,7 +252,7 @@ export default function QuizEditor() {
                             <button id="wd-assignment-editor-save" className="btn btn-lg btn-danger me-1 float-end" onClick={handleSubmit}>
                                 Save
                             </button>
-                            <Link to={`/Kanbas/Courses/${cid}/Assignments`} id="wd-assignment-editor-cancel" className="btn btn-lg btn-secondary me-1 float-end">
+                            <Link to={`/Kanbas/Courses/${cid}/Quizzes`} id="wd-assignment-editor-cancel" className="btn btn-lg btn-secondary me-1 float-end">
                                 Cancel
                             </Link>
                         </div>
