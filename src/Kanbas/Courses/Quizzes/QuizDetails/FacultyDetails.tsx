@@ -5,51 +5,11 @@ import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 
 export default function FacultyDetails() {
-    const [_id, setId] = useState("");
-    const [title, setTitle] = useState("Quiz");
-    // const [course, setCourse] = useState("");
-    // const [description, setDescription] = useState("");
-    const [quizType, setQuizType] = useState("Graded Quiz");
-    const [points, setPoints] = useState(0);
-    const [assignmentGroup, setAssignmentGroup] = useState("Quizzes");
-    const [shuffleAnswers, setShuffleAnswers] = useState(false);
-    const [timeLimit, setTimeLimit] = useState(0);
-    const [multipleAttempts, setMultipleAttempts] = useState(false);
-    const [showCorrectAnswers, setShowCorrectAnswers] = useState(true);
-    // const [accessCode, setAccessCode] = useState("");
-    const [oneQuestionAtATime, setOneQuestionAtATime] = useState(false);
-    const [webcamRequired, setWebCamRequired] = useState(false);
-    const [lockQuestionsAfterAnswering, setLockQuestionsAfterAnswering] = useState(false);
-    const [dueDate, setDueDate] = useState("");
-    const [availableDate, setAvailableDate] = useState("");
-    const [untilDate, setUntilDate] = useState("");
-    // const [published, setPublished] = useState(false);
-
     const { cid, qid } = useParams();
     const { quizzes } = useSelector((state: any) => state.quizzesReducer);
 
-    const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid);
-    if (existingQuiz && _id === "") {
-        setId(existingQuiz._id);
-        setTitle(existingQuiz.title);
-        // setCourse(existingQuiz.course);
-        // setDescription(existingQuiz.description);
-        setQuizType(existingQuiz.quizType);
-        setPoints(existingQuiz.points);
-        setAssignmentGroup(existingQuiz.assignmentGroup);
-        setShuffleAnswers(existingQuiz.shuffleAnswers);
-        setTimeLimit(existingQuiz.timeLimit);
-        setMultipleAttempts(existingQuiz.multipleAttempts);
-        setShowCorrectAnswers(existingQuiz.showCorrectAnswers);
-        // setAccessCode(existingQuiz.accessCode);
-        setOneQuestionAtATime(existingQuiz.oneQuestionAtATime);
-        setWebCamRequired(existingQuiz.webcamRequired);
-        setLockQuestionsAfterAnswering(existingQuiz.lockQuestionsAfterAnswering);
-        setDueDate(existingQuiz.dueDate);
-        setAvailableDate(existingQuiz.availableDate);
-        setUntilDate(existingQuiz.untilDate);
-        // setPublished(existingQuiz.published);
-    }
+    const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid)
+
     return (
         <div id="faculty-quiz-details">
             <div className="container">
@@ -58,15 +18,14 @@ export default function FacultyDetails() {
                         <Link
                             className="wd-quiz-link text-decoration-none text-dark"
                             to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/preview`}>
-                            {" "}
-                            //TODO: Change to the actual editing later?
+                            {/* //TODO: Bring us to a view only of the actual quiz */}
                             <button className="btn btn-secondary mb-2 me-2" id="wd-signout-btn">
                                 Preview
                             </button>
                         </Link>
                         <Link
                             className="wd-quiz-link text-decoration-none text-dark"
-                            to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/edit`}>
+                            to={`/Kanbas/Courses/${cid}/Quizzes/${qid}`}>
                             <button className="btn btn-secondary mb-2" id="wd-signout-btn">
                                 <FaPencilAlt className="me-1" />
                                 Edit
@@ -76,7 +35,7 @@ export default function FacultyDetails() {
                 </div>
             </div>
             <hr />
-            <p className="h1">{title}</p>
+            <p className="h1">{existingQuiz.details.title}</p>
 
             <div>
                 <div className="row">
@@ -86,7 +45,7 @@ export default function FacultyDetails() {
                         </label>
                     </div>
                     <div className="col-4">
-                        <label className="form-label">{quizType}</label>
+                        <label className="form-label">{existingQuiz.details.quizType}</label>
                     </div>
                 </div>
 
@@ -97,7 +56,7 @@ export default function FacultyDetails() {
                         </label>
                     </div>
                     <div className="col-4">
-                        <label className="form-label">{points}</label>
+                        <label className="form-label">{existingQuiz.details.points}</label>
                     </div>
                 </div>
 
@@ -108,7 +67,7 @@ export default function FacultyDetails() {
                         </label>
                     </div>
                     <div className="col-4">
-                        <label className="form-label">{assignmentGroup}</label>
+                        <label className="form-label">{existingQuiz.details.assignmentGroup}</label>
                     </div>
                 </div>
 
@@ -119,7 +78,7 @@ export default function FacultyDetails() {
                         </label>
                     </div>
                     <div className="col-4">
-                        <label className="form-label">{quizType}</label>
+                        <label className="form-label">{existingQuiz.details.shuffleAnswers ? "Yes" : "No"}</label>
                     </div>
                 </div>
 
@@ -131,7 +90,8 @@ export default function FacultyDetails() {
                     </div>
                     <div className="col-4">
                         <label className="form-label">
-                            {timeLimit} {timeLimit === 1 ? "minute" : "minutes"}
+                            {existingQuiz.details.timeLimit}{" "}
+                            {existingQuiz.details.timeLimit === 1 ? "minute" : "minutes"}
                         </label>
                     </div>
                 </div>
@@ -143,7 +103,7 @@ export default function FacultyDetails() {
                         </label>
                     </div>
                     <div className="col-4">
-                        <label className="form-label">{multipleAttempts ? "Yes" : "No"}</label>
+                        <label className="form-label">{existingQuiz.details.multipleAttempts ? "Yes" : "No"}</label>
                     </div>
                 </div>
 
@@ -165,7 +125,9 @@ export default function FacultyDetails() {
                         </label>
                     </div>
                     <div className="col-4">
-                        <label className="form-label">{showCorrectAnswers ? "Immediately" : "No"}</label>
+                        <label className="form-label">
+                            {existingQuiz.details.showCorrectAnswers ? "Immediately" : "No"}
+                        </label>
                     </div>
                 </div>
 
@@ -176,7 +138,7 @@ export default function FacultyDetails() {
                         </label>
                     </div>
                     <div className="col-4">
-                        <label className="form-label">{oneQuestionAtATime ? "Yes" : "No"}</label>
+                        <label className="form-label">{existingQuiz.details.oneQuestionAtATime ? "Yes" : "No"}</label>
                     </div>
                 </div>
 
@@ -209,7 +171,7 @@ export default function FacultyDetails() {
                         </label>
                     </div>
                     <div className="col-4">
-                        <label className="form-label">{webcamRequired ? "Yes" : "No"}</label>
+                        <label className="form-label">{existingQuiz.details.webcamRequired ? "Yes" : "No"}</label>
                     </div>
                 </div>
 
@@ -220,7 +182,9 @@ export default function FacultyDetails() {
                         </label>
                     </div>
                     <div className="col-4">
-                        <label className="form-label">{lockQuestionsAfterAnswering ? "Yes" : "No"}</label>
+                        <label className="form-label">
+                            {existingQuiz.details.lockQuestionsAfterAnswering ? "Yes" : "No"}
+                        </label>
                     </div>
                 </div>
             </div>
@@ -237,10 +201,10 @@ export default function FacultyDetails() {
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{dueDate}</td>
+                            <td>{existingQuiz.details.dueDate}</td>
                             <td>Everyone</td>
-                            <td>{availableDate}</td>
-                            <td>{untilDate}</td>
+                            <td>{existingQuiz.details.availableDate}</td>
+                            <td>{existingQuiz.details.untilDate}</td>
                         </tr>
                     </tbody>
                 </table>

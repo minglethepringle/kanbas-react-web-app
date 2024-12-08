@@ -10,8 +10,8 @@ import PeopleTable from "./People/Table";
 import { useEffect, useState } from "react";
 import * as courseClient from "./client";
 import Quizzes from "./Quizzes";
-import QuizEditor from "./Quizzes/Editor";
 import QuizDetails from "./Quizzes/QuizDetails";
+import QuizEditor from "./Quizzes/QuizEditor";
 export default function Courses({ courses }: { courses: any[]; }) {
     const { cid } = useParams();
     const { pathname } = useLocation();
