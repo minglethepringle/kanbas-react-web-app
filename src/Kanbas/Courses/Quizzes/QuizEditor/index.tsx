@@ -6,6 +6,7 @@ import DetailsEditor from "./DetailsEditor";
 import QuestionsEditor from "./QuestionsEditor";
 import * as coursesClient from "../../client";
 import * as quizzesClient from "../client";
+import { Link } from "react-router-dom";
 
 // QuizEditor.tsx
 export default function QuizEditor() {
@@ -35,13 +36,13 @@ export default function QuizEditor() {
         dueDate: "",
         availableDate: "",
         untilDate: "",
-        published: false
+        published: false,
     });
 
     // Load existing quiz data
     const editing = qid !== "new";
     const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid);
-    
+
     useEffect(() => {
         if (existingQuiz && quizState._id === "") {
             setQuizState({
@@ -126,14 +127,31 @@ export default function QuizEditor() {
             </ul>
 
             <div className="tab-content" id="myTabContent">
-                {activeTab === "Details" && 
-                    <DetailsEditor 
-                        quizState={quizState}
-                        setQuizState={setQuizState}
-                        onSave={handleSave}
-                    />}
-                {activeTab === "Questions" && 
-                    <QuestionsEditor />}
+                {activeTab === "Details" && (
+                    <DetailsEditor quizState={quizState} setQuizState={setQuizState} />
+                )}
+                {activeTab === "Questions" && <QuestionsEditor />}
+            </div>
+
+            <div className="row mb-3">
+                <div className="col-2"></div>
+                <div className="col-8">
+                    <div>
+                        <hr />
+                        <button
+                            id="wd-assignment-editor-save"
+                            className="btn btn-lg btn-danger me-1 float-end"
+                            onClick={handleSave}>
+                            Save
+                        </button>
+                        <Link
+                            to={`/Kanbas/Courses/${cid}/Quizzes`}
+                            id="wd-assignment-editor-cancel"
+                            className="btn btn-lg btn-secondary me-1 float-end">
+                            Cancel
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );

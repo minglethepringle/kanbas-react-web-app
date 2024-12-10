@@ -9,10 +9,9 @@ import * as quizzesClient from "../client";
 interface DetailsEditorProps {
     quizState: any;
     setQuizState: (state: any) => void;
-    onSave: () => void;
 }
 
-export default function DetailsEditor({ quizState, setQuizState, onSave }: DetailsEditorProps) {
+export default function DetailsEditor({ quizState, setQuizState }: DetailsEditorProps) {
     const { cid } = useParams();
 
     const updateField = (field: string, value: any) => {
@@ -25,7 +24,7 @@ export default function DetailsEditor({ quizState, setQuizState, onSave }: Detai
     return (
         <div id="wd-quiz-details-editor">
             <div className="mb-3">
-                <label htmlFor="wd-name" className="form-label">
+                <label htmlFor="wd-name" className="form-label mt-3">
                     Quiz Name
                 </label>
                 <input
@@ -299,27 +298,6 @@ export default function DetailsEditor({ quizState, setQuizState, onSave }: Detai
                                     />
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="row mb-3">
-                    <div className="col-2"></div>
-                    <div className="col-8">
-                        <div>
-                            <hr />
-                            <button
-                                id="wd-assignment-editor-save"
-                                className="btn btn-lg btn-danger me-1 float-end"
-                                onClick={onSave}>
-                                Save
-                            </button>
-                            <Link
-                                to={`/Kanbas/Courses/${cid}/Quizzes`}
-                                id="wd-assignment-editor-cancel"
-                                className="btn btn-lg btn-secondary me-1 float-end">
-                                Cancel
-                            </Link>
                         </div>
                     </div>
                 </div>
