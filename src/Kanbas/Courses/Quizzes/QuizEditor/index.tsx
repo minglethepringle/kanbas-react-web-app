@@ -21,6 +21,7 @@ export default function QuizEditor() {
         _id: "",
         title: "Quiz",
         course: "",
+        questions: [],
         description: "",
         points: 0,
         quizType: "Graded Quiz",
@@ -49,6 +50,7 @@ export default function QuizEditor() {
                 _id: existingQuiz._id,
                 title: existingQuiz.title,
                 course: existingQuiz.course,
+                questions: existingQuiz.questions,
                 description: existingQuiz.description,
                 points: existingQuiz.points,
                 assignmentGroup: existingQuiz.assignmentGroup,
@@ -74,6 +76,7 @@ export default function QuizEditor() {
         const quiz = {
             _id: quizState._id,
             course: quizState.course,
+            questions: quizState.questions,
             details: {
                 title: quizState.title,
                 description: quizState.description,
@@ -130,7 +133,7 @@ export default function QuizEditor() {
                 {activeTab === "Details" && (
                     <DetailsEditor quizState={quizState} setQuizState={setQuizState} />
                 )}
-                {activeTab === "Questions" && <QuestionsEditor />}
+                {activeTab === "Questions" && <QuestionsEditor quizState={quizState} setQuizState={setQuizState}/>}
             </div>
 
             <div className="row mb-3">

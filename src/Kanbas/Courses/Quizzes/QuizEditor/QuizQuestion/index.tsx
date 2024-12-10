@@ -3,14 +3,22 @@ import * as Constants from "./constants";
 import FitBQuestion from "./FitBQuestion";
 import MCQuestion from "./MCQuestion";
 import TFQuestion from "./TFQuestion";
+import { addQuestion, updateQuestion, deleteQuestion, editQuestion, setQuestions } from "../reducer";
+import { useDispatch } from "react-redux";
 
-export default function QuizQuestion() {
-    // TODO: Need to make sure the state gets saved when you switch between "Details and Question", maybe look at the DetailsEditor example?
+interface QuizQuestionProps {
+    quizState: any;
+    setQuizState: (state: any) => void;
+}
+
+export default function QuizQuestion({ quizState, setQuizState }: QuizQuestionProps) {
+    // TODO: Need to make sure the state gets saved when you switch between "Details and Question" --> use quizState and setQuizState passed down from QuestionsEditor
     // TODO: Grab the properties from each Question and populate it (existingQuiz example)
     const [questionTitle, setQuestionTitle] = useState("");
     const [questionType, setQuestionType] = useState(Constants.MC);
     const [questionPoints, setQuestionPoints] = useState(1);
     const [questionDescription, setQuestionDescription] = useState("");
+    const dispatch = useDispatch();
 
     // Renders the prompt of the current question
     const renderPrompt = () => {
@@ -93,7 +101,12 @@ export default function QuizQuestion() {
                 </div>
                 <div className="card-footer">
                     <button className="btn btn-secondary me-1">Cancel</button>
-                    <button className="btn btn-danger">Update Question</button>
+                    <button
+                        className="btn btn-danger"
+                        //onClick={ }
+                        >
+                        Update Question
+                    </button>
                 </div>
             </div>
         </div>
