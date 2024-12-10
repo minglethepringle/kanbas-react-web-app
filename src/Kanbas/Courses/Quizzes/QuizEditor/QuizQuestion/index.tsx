@@ -3,26 +3,38 @@ import * as Constants from "./constants";
 import FitBQuestion from "./FitBQuestion";
 import MCQuestion from "./MCQuestion";
 import TFQuestion from "./TFQuestion";
-import { addQuestion, updateQuestion, deleteQuestion, editQuestion, setQuestions } from "../reducer";
 import { useDispatch } from "react-redux";
+import { FaTrash } from "react-icons/fa";
+import { deleteQuestion } from "../../client";
 
-interface QuizQuestionProps {
-    quizState: any;
-    setQuizState: (state: any) => void;
+interface QuestionType {
+    _id: string,
+    qid: string,
+    questionType: "Multiple Choice" | "True False" | "Fill in the Blank",
+    title: string,
+    points: number,
+    question: string,
+    properties: any
 }
 
-export default function QuizQuestion({ quizState, setQuizState }: QuizQuestionProps) {
-    // TODO: Need to make sure the state gets saved when you switch between "Details and Question" --> use quizState and setQuizState passed down from QuestionsEditor
-    // TODO: Grab the properties from each Question and populate it (existingQuiz example)
-    const [questionTitle, setQuestionTitle] = useState("");
-    const [questionType, setQuestionType] = useState(Constants.MC);
-    const [questionPoints, setQuestionPoints] = useState(1);
-    const [questionDescription, setQuestionDescription] = useState("");
-    const dispatch = useDispatch();
+interface QuizQuestionProps {
+    question: QuestionType,
+    updateQuestion: (q: any) => void,
+    deleteQuestion: (qid: any) => void
+}
+
+interface Answer {
+    id: string;
+    text: string;
+    isCorrect: boolean;
+}
+
+export default function QuizQuestion({ question, updateQuestion, deleteQuestion }: QuizQuestionProps) {
+    const [answers, setAnswers] = useState<Answer[]>([]);
 
     // Renders the prompt of the current question
     const renderPrompt = () => {
-        switch (questionType) {
+        switch (question.questionType) {
             case Constants.MC:
                 return Constants.MC_PROMPT;
             case Constants.TF:
@@ -33,11 +45,50 @@ export default function QuizQuestion({ quizState, setQuizState }: QuizQuestionPr
                 return null;
         }
     };
-    // Renders the extra features depending on what the quiz is
+
+    // Adds a new answer to the question
+    const addAnswer = () => {
+        if (question.questionType === Constants.TF) {
+            setAnswers([{
+                id: crypto.randomUUID(),
+                text: "True",
+                isCorrect: false
+            }, {
+                id: crypto.randomUUID(),
+                text: "False",
+                isCorrect: false
+            }]);
+        } else {
+            const newAnswer: Answer = { id: crypto.randomUUID(), text: "", isCorrect: false };
+            setAnswers([...answers, newAnswer]);
+        }
+    };
+
+    // Updates the answer object
+    const updateAnswer = (answer: Answer) => {
+        setAnswers(
+            answers.map((a) =>
+                a.id === answer.id ? answer : a
+            )
+        );
+
+        // Update in the question object
+        updateQuestion({ ...question, properties: { choices: answers } });
+    };
+
+    // Delete answer from the question
+    const deleteAnswer = (id: string) => {
+        setAnswers(answers.filter((answer) => answer.id !== id));
+    }
+
+    // Renders the extra features depending on what the questionType is
     const renderQuizProperty = () => {
-        switch (questionType) {
+        switch (question.questionType) {
             case Constants.MC:
-                return <MCQuestion />;
+                // Dude fml my brain is fried
+                return answers.map((answer) => (
+                    <MCQuestion answer={answer} addAnswer={addAnswer} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer}/>
+                ))
             case Constants.TF:
                 return <TFQuestion />;
             case Constants.FITB:
@@ -46,6 +97,7 @@ export default function QuizQuestion({ quizState, setQuizState }: QuizQuestionPr
                 return null;
         }
     };
+    
     return (
         <div>
             <div className="card m-3">
@@ -55,24 +107,24 @@ export default function QuizQuestion({ quizState, setQuizState }: QuizQuestionPr
                             <input
                                 className="form-control"
                                 id="wd-name"
-                                value={questionTitle}
-                                onChange={(e) => setQuestionTitle(e.target.value)}
+                                value={question.title}
+                                onChange={(e) => updateQuestion({ ...question, title: e.target.value })}
                             />
                         </div>
                         <div className="col-3">
                             <select
                                 className="form-select"
                                 id="wd-group"
-                                value={questionType}
-                                onChange={(e) => setQuestionType(e.target.value)}>
+                                value={question.questionType}
+                                onChange={(e) => updateQuestion({ ...question, questionType: e.target.value })}>
                                 <option selected value={Constants.MC}>
                                     Multiple Choice
                                 </option>
                                 <option value={Constants.TF}>True/False</option>
-                                <option value={Constants.FITB}>Fill In the Blank</option>
+                                <option value={Constants.FITB}>Fill in the Blank</option>
                             </select>
                         </div>
-                        <div className="col-4" />
+                        <div className="col-3"></div>
                         <div className="col-2 d-flex">
                             <label htmlFor="wd-question-pts" className="form-label me-2 align-self-center">
                                 <b>pts:</b>
@@ -80,9 +132,14 @@ export default function QuizQuestion({ quizState, setQuizState }: QuizQuestionPr
                             <input
                                 className="form-control"
                                 id="wd-question-pts"
-                                value={questionPoints}
-                                onChange={(e) => setQuestionPoints(Number(e.target.value))}
+                                value={question.points}
+                                onChange={(e) => updateQuestion({ ...question, points: Number(e.target.value) })}
                             />
+                        </div>
+                        <div className="col-1">
+                            <button className="btn btn-danger ms-3 float-end" onClick={() => deleteQuestion(question._id)}>
+                                <FaTrash/>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -94,19 +151,10 @@ export default function QuizQuestion({ quizState, setQuizState }: QuizQuestionPr
                         className="form-control"
                         id="wd-description"
                         rows={4}
-                        value={questionDescription}
-                        onChange={(e) => setQuestionDescription(e.target.value)}></textarea>
+                        value={question.question}
+                        onChange={(e) => updateQuestion({ ...question, question: e.target.value })}></textarea>
                     <b>Answers:</b>
                     {renderQuizProperty()}
-                </div>
-                <div className="card-footer">
-                    <button className="btn btn-secondary me-1">Cancel</button>
-                    <button
-                        className="btn btn-danger"
-                        //onClick={ }
-                        >
-                        Update Question
-                    </button>
                 </div>
             </div>
         </div>

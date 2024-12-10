@@ -16,13 +16,13 @@ export const publishQuiz = async (quizId: string) => {
     return response.data;
 }
 
-export const createQuestionForQuiz = async (quizId: string, question: any) => {
-    const response = await axiosWithCredentials.post(
-        `${QUIZZES_API}/${quizId}/questions`,
-        question
-    );
-    return response.data;
-}
+// export const createQuestionForQuiz = async (quizId: string, question: any) => {
+//     const response = await axiosWithCredentials.post(
+//         `${QUIZZES_API}/${quizId}/questions`,
+//         question
+//     );
+//     return response.data;
+// }
 
 export const findQuestionsForQuiz = async (quizId: string) => {
     const response = await axios

@@ -15,6 +15,7 @@ export default function QuizEditor() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { quizzes } = useSelector((state: any) => state.quizzesReducer);
+    const [questions, setQuestions] = useState([]);
 
     // Lift all the state up
     const [quizState, setQuizState] = useState({
@@ -40,10 +41,9 @@ export default function QuizEditor() {
         published: false,
     });
 
-    // Load existing quiz data
+    // Load existing quiz details
     const editing = qid !== "new";
     const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid);
-
     useEffect(() => {
         if (existingQuiz && quizState._id === "") {
             setQuizState({
@@ -70,6 +70,15 @@ export default function QuizEditor() {
             });
         }
     }, [existingQuiz]);
+
+    // Load in existing quiz questions
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            const questions = await quizzesClient.findQuestionsForQuiz(qid as string);
+            setQuestions(questions);
+        };
+        fetchQuestions();
+    }, [qid]);
 
     // Handle saving quiz
     const handleSave = async () => {
@@ -130,10 +139,12 @@ export default function QuizEditor() {
             </ul>
 
             <div className="tab-content" id="myTabContent">
-                {activeTab === "Details" && (
+                <div className={activeTab !== "Details" ? "d-none" : ""}>
                     <DetailsEditor quizState={quizState} setQuizState={setQuizState} />
-                )}
-                {activeTab === "Questions" && <QuestionsEditor quizState={quizState} setQuizState={setQuizState}/>}
+                </div>
+                <div className={activeTab !== "Questions" ? "d-none" : ""}>
+                    <QuestionsEditor questions={questions} setQuestions={setQuestions} />
+                </div>
             </div>
 
             <div className="row mb-3">
