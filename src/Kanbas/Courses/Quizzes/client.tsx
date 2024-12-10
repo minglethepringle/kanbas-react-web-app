@@ -11,6 +11,11 @@ export const updateQuiz = async (quiz: any) => {
     return data;
 };
 
+export const publishQuiz = async (quizId: string) => {
+    const response = await axiosWithCredentials.put(`${QUIZZES_API}/${quizId}/publish`);
+    return response.data;
+}
+
 export const createQuestionForQuiz = async (quizId: string, question: any) => {
     const response = await axiosWithCredentials.post(
         `${QUIZZES_API}/${quizId}/questions`,

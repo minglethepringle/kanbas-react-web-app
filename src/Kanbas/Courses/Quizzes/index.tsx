@@ -1,7 +1,7 @@
 import { BsGripVertical, BsPlus } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
 import { SlNotebook } from "react-icons/sl";
-import { FaPlus, FaSortDown, FaTrash } from "react-icons/fa";
+import { FaPlus, FaSortDown, FaTrash, FaUpload } from "react-icons/fa";
 import LessonControlButtons from "../Modules/LessonControlButtons";
 import { IoEllipsisVertical } from "react-icons/io5";
 import ProtectedRoleContent from "../../Security/ProtectedRoleContent";
@@ -9,9 +9,10 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { deleteQuiz, setQuizzes } from "./reducer";
+import { deleteQuiz, setQuizzes, updateQuiz } from "./reducer";
 import * as coursesClient from "../client"
 import * as quizzesClient from "./client"
+import GreenCheckmark from "../Modules/GreenCheckmark";
 
 
 export default function Quizzes() {
@@ -32,6 +33,12 @@ export default function Quizzes() {
         await quizzesClient.deleteQuiz(qidToDelete);
         dispatch(deleteQuiz(qidToDelete));
     }
+
+    const publishQuiz = async (qid: string) => {
+        const updatedQuiz = await quizzesClient.publishQuiz(qid);
+        dispatch(updateQuiz(updatedQuiz));
+    }
+
     return (
         <div id="wd-quizzes">
             <div className="row mb-4">
@@ -78,13 +85,19 @@ export default function Quizzes() {
                                                 {quiz.details.title}
                                             </Link>
                                         </h3>
-                                        {!quiz.details.published ? <span><b>Not Published</b> | </span> : <></> }
+                                        {!quiz.details.published ? <span><b>Not Published</b> | </span> : <></>}
                                         <b>Available Until</b> {quiz.details.availableDate?.substring(0, 10) ?? "N/A"} | <b>Due</b> {quiz.details.dueDate?.substring(0, 10) ?? "N/A"} | {quiz.details.points} pts | {quiz.questions.length}
                                     </div>
                                     <div className="col-1">
-                                        <LessonControlButtons />
+                                        <div className="float-end">
+                                            {
+                                                quiz.details.published
+                                                ? <GreenCheckmark />
+                                                : <FaUpload className="text-warning" onClick={() => publishQuiz(quiz._id)}/>
+                                            }
+                                        </div>
                                         <ProtectedRoleContent role="FACULTY">
-                                            <FaTrash className="text-danger me-2 mt-1 float-end" data-bs-toggle="modal" data-bs-target="#wd-delete-quiz-dialog" onClick={() => setQidToDelete(quiz._id) } />
+                                            <FaTrash className="text-danger me-2 mt-1 float-end" data-bs-toggle="modal" data-bs-target="#wd-delete-quiz-dialog" onClick={() => setQidToDelete(quiz._id)} />
                                         </ProtectedRoleContent>
                                     </div>
                                 </li>
