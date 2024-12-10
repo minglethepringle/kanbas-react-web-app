@@ -24,13 +24,11 @@ export default function DetailsEditor({ quizState, setQuizState }: DetailsEditor
     return (
         <div id="wd-quiz-details-editor">
             <div className="mb-3">
-                <label htmlFor="wd-name" className="form-label mt-3">
-                    Quiz Name
-                </label>
                 <input
-                    className="form-control"
+                    className="form-control mt-3"
                     id="wd-name"
                     value={quizState.title}
+                    placeholder="Quiz Name"
                     onChange={(e) => updateField("title", e.target.value)}
                 />
             </div>
@@ -39,10 +37,11 @@ export default function DetailsEditor({ quizState, setQuizState }: DetailsEditor
                 <textarea
                     className="form-control"
                     id="wd-description"
+                    placeholder="Quiz Description"
                     rows={5}
                     cols={30}
-                    onChange={(e) => updateField("description", e.target.value)}>
-                    {quizState.description}
+                    onChange={(e) => updateField("description", e.target.value)}
+                    value={quizState.description}>
                 </textarea>
             </div>
 
@@ -99,12 +98,12 @@ export default function DetailsEditor({ quizState, setQuizState }: DetailsEditor
                             id="wd-display-grade-as"
                             value={quizState.quizType}
                             onChange={(e) => updateField("quizType", e.target.value)}>
-                            <option selected value="GradedQuiz">
+                            <option selected value="Graded Quiz">
                                 GRADED QUIZ
                             </option>
-                            <option value="PracticeQuiz">PRACTICE QUIZ</option>
-                            <option value="GradedSurvey">GRADED SURVEY</option>
-                            <option value="UngradedSurvey">UNGRADED SURVEY</option>
+                            <option value="Practice Quiz">PRACTICE QUIZ</option>
+                            <option value="Graded Survey">GRADED SURVEY</option>
+                            <option value="Ungraded Survey">UNGRADED SURVEY</option>
                         </select>
                     </div>
                 </div>

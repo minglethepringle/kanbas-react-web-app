@@ -66,7 +66,7 @@ export default function Quizzes() {
                     <ul className="wd-lessons list-group rounded-0 ">
                         {
                             quizzes.map((quiz: any) => (
-                                <li className="wd-lesson list-group-item p-3 ps-1 d-flex">
+                                <li className={`${!quiz.details.published ? "unpublished" : ""} wd-lesson list-group-item p-3 ps-1 d-flex`}>
                                     <div className="col-1">
                                         <BsGripVertical className="me-2 fs-3" />
                                         <SlNotebook className="text-success me-3" />
@@ -78,7 +78,8 @@ export default function Quizzes() {
                                                 {quiz.details.title}
                                             </Link>
                                         </h3>
-                                        <b>Available Until</b> {new Date(quiz.details.availableDate).toISOString().slice(0, 10)} | <b>Due</b> {new Date(quiz.details.dueDate).toISOString().slice(0, 10)} | {quiz.details.points} pts | {quiz.questions.length}
+                                        {!quiz.details.published ? <span><b>Not Published</b> | </span> : <></> }
+                                        <b>Available Until</b> {quiz.details.availableDate?.substring(0, 10) ?? "N/A"} | <b>Due</b> {quiz.details.dueDate?.substring(0, 10) ?? "N/A"} | {quiz.details.points} pts | {quiz.questions.length}
                                     </div>
                                     <div className="col-1">
                                         <LessonControlButtons />
