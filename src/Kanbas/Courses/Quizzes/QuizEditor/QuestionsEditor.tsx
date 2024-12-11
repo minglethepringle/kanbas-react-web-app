@@ -54,8 +54,8 @@ export default function QuestionsEditor({ questions, setQuestions }: QuestionsEd
     };
 
     // Deletes a question locally in questions state
-    const deleteQuestion = (qid: string) => {
-        const updatedQuestions = questions.filter((q: QuestionType) => q._id !== qid);
+    const deleteQuestion = (id: string) => {
+        const updatedQuestions = questions.filter((q: QuestionType) => q._id !== id);
         setQuestions(updatedQuestions);
     }
 
@@ -64,7 +64,9 @@ export default function QuestionsEditor({ questions, setQuestions }: QuestionsEd
             <div className="container">
                 {
                     questions.map((question: QuestionType) => {
-                        return <QuizQuestion question={question}
+                        return <QuizQuestion 
+                                            key={question._id}
+                                            question={question}
                                             updateQuestion={updateQuestion}
                                             deleteQuestion={deleteQuestion}/>;
                     })

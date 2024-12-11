@@ -32,11 +32,6 @@ interface Answer {
 export default function QuizQuestion({ question, updateQuestion, deleteQuestion }: QuizQuestionProps) {
     const [answers, setAnswers] = useState<Answer[]>([]);
 
-    useEffect(() => {
-        // Any time answers updates, update the question object
-        updateQuestion({ ...question, properties: { choices: answers } });
-    }, [answers]);
-
     // Renders the prompt of the current question
     const renderPrompt = () => {
         switch (question.questionType) {
@@ -67,6 +62,8 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
             const newAnswer: Answer = { id: crypto.randomUUID(), text: "", isCorrect: false };
             setAnswers([...answers, newAnswer]);
         }
+
+        updateQuestion({ ...question, properties: { choices: answers } });
     };
 
     // Updates the answer object
@@ -76,11 +73,15 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
                 a.id === answer.id ? answer : a
             )
         );
+
+        updateQuestion({ ...question, properties: { choices: answers } });
     };
 
     // Delete answer from the question
     const deleteAnswer = (id: string) => {
         setAnswers(answers.filter((answer) => answer.id !== id));
+
+        updateQuestion({ ...question, properties: { choices: answers } });
     }
 
     // Renders the extra features depending on what the questionType is
@@ -90,8 +91,8 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
                 return <MCQuestion answers={answers} setAnswers={setAnswers} addAnswer={addAnswer} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer}/>
             case Constants.TF:
                 return <TFQuestion answers={answers} setAnswers={setAnswers}/>;
-            // case Constants.FITB:
-            //     return <FitBQuestion />;
+            case Constants.FITB:
+                return <FitBQuestion answers={answers} setAnswers={setAnswers} addAnswer={addAnswer} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer} />;
             default:
                 return null;
         }
