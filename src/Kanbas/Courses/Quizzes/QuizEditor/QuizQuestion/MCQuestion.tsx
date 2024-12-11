@@ -7,9 +7,9 @@ interface Answer {
     isCorrect: boolean;
 }
 
-export default function MCQuestion({ answers, setAnswers, addAnswer, updateAnswer, deleteAnswer }: {
+export default function MCQuestion({ answers, updateAnswers, addAnswer, updateAnswer, deleteAnswer }: {
     answers: Answer[];
-    setAnswers: (answers: Answer[]) => void;
+    updateAnswers: (answers: Answer[]) => void;
     addAnswer: () => void;
     updateAnswer: (answer: Answer) => void;
     deleteAnswer: (id: string) => void;
@@ -21,7 +21,7 @@ export default function MCQuestion({ answers, setAnswers, addAnswer, updateAnswe
             }
             return { ...answer, isCorrect: false };
         });
-        setAnswers(updatedAnswers);
+        updateAnswers(updatedAnswers);
     };
 
     return (

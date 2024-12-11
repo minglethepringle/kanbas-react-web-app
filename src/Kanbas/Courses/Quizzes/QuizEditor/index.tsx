@@ -19,9 +19,10 @@ export default function QuizEditor() {
 
     // Lift all the state up
     const [quizState, setQuizState] = useState({
-        _id: "",
+        _id: qid,
         title: "Quiz",
-        course: "",
+        course: cid,
+        // actually unused in the code
         questions: [],
         description: "",
         points: 0,
@@ -42,33 +43,34 @@ export default function QuizEditor() {
     });
 
     // Load existing quiz details
-    const editing = qid !== "new";
+    // const editing = qid !== "new";
     const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid);
     useEffect(() => {
-        if (existingQuiz && quizState._id === "") {
+        // if (existingQuiz && quizState._id === "") {
             setQuizState({
                 _id: existingQuiz._id,
-                title: existingQuiz.details.title,
-                course: existingQuiz.course,
-                questions: existingQuiz.questions,
-                description: existingQuiz.details.description,
-                points: existingQuiz.details.points,
-                assignmentGroup: existingQuiz.details.assignmentGroup,
-                quizType: existingQuiz.details.quizType,
-                shuffleAnswers: existingQuiz.details.shuffleAnswers,
-                timeLimit: existingQuiz.details.timeLimit,
-                multipleAttempts: existingQuiz.details.multipleAttempts,
-                showCorrectAnswers: existingQuiz.details.showCorrectAnswers,
-                accessCode: existingQuiz.details.accessCode,
-                oneQuestionAtATime: existingQuiz.details.oneQuestionAtATime,
-                webcamRequired: existingQuiz.details.webcamRequired,
-                lockQuestionsAfterAnswering: existingQuiz.details.lockQuestionsAfterAnswering,
-                dueDate: existingQuiz.details.dueDate?.substring(0, 10),
-                availableDate: existingQuiz.details.availableDate?.substring(0, 10),
-                untilDate: existingQuiz.details.untilDate?.substring(0, 10),
-                published: existingQuiz.details.published,
+                title: existingQuiz.details?.title || "Quiz",
+                course: existingQuiz.course || cid,
+                questions: existingQuiz.questions || [],
+                description: existingQuiz.details?.description || "",
+                points: existingQuiz.details?.points || 0,
+                assignmentGroup: existingQuiz.details?.assignmentGroup || "Quizzes",
+                quizType: existingQuiz.details?.quizType || "Graded Quiz",
+                shuffleAnswers: existingQuiz.details?.shuffleAnswers || false,
+                timeLimit: existingQuiz.details?.timeLimit || 20,
+                multipleAttempts: existingQuiz.details?.multipleAttempts  ||  false,
+                showCorrectAnswers: existingQuiz.details?.showCorrectAnswers || true,
+                accessCode: existingQuiz.details?.accessCode || "",
+                oneQuestionAtATime: existingQuiz.details?.oneQuestionAtATime || false,
+                webcamRequired: existingQuiz.details?.webcamRequired || false,
+                lockQuestionsAfterAnswering: existingQuiz.details?.lockQuestionsAfterAnswering || false,
+                dueDate: existingQuiz.details?.dueDate?.substring(0, 10) || "",
+                availableDate: existingQuiz.details?.availableDate?.substring(0, 10) || "",
+                untilDate: existingQuiz.details?.untilDate?.substring(0, 10) || "",
+                published: existingQuiz.details?.published || false,
             });
-        }
+            setQuestions(existingQuiz.questions || []);
+        // }
     }, [existingQuiz]);
 
     // Load in existing quiz questions
@@ -77,15 +79,22 @@ export default function QuizEditor() {
             const questions = await quizzesClient.findQuestionsForQuiz(qid as string);
             setQuestions(questions);
         };
-        fetchQuestions();
+        // if (qid !== "new")
+            // fetchQuestions();
     }, [qid]);
 
     // Handle saving quiz
     const handleSave = async () => {
+        // Remove all _id from questions
+        const qs: any = questions ? questions.map((question: any) => {
+            const { _id, ...rest } = question;
+            return rest;
+        }) : [];
+
         const quiz = {
             _id: quizState._id,
             course: quizState.course,
-            questions: quizState.questions,
+            questions: qs,
             details: {
                 title: quizState.title,
                 description: quizState.description,
@@ -107,14 +116,14 @@ export default function QuizEditor() {
             },
         };
 
-        if (editing) {
+        // if (editing) {
             await quizzesClient.updateQuiz(quiz);
             dispatch(updateQuiz(quiz));
-        } else {
-            quiz.course = cid!;
-            const newQuiz = await coursesClient.createQuizForCourse(cid!, quiz);
-            dispatch(addQuiz(newQuiz));
-        }
+        // } else {
+            // quiz.course = cid!;
+            // const newQuiz = await coursesClient.createQuizForCourse(cid!, quiz);
+            // dispatch(addQuiz(newQuiz));
+        // }
 
         navigate(`/Kanbas/Courses/${cid}/Quizzes`);
     };

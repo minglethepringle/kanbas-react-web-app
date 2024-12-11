@@ -7,9 +7,9 @@ interface Answer {
   isCorrect: boolean;
 }
 
-export default function TFQuestion({ answers, setAnswers }: {
+export default function TFQuestion({ answers, updateAnswers }: {
   answers: Answer[];
-  setAnswers: (answers: Answer[]) => void;
+  updateAnswers: (answers: Answer[]) => void;
 }) {
   const markCorrect = (id: string, value: boolean) => {
     const updatedAnswers = answers.map((answer) => {
@@ -18,7 +18,7 @@ export default function TFQuestion({ answers, setAnswers }: {
       }
       return { ...answer, isCorrect: !value };
     });
-    setAnswers(updatedAnswers);
+    updateAnswers(updatedAnswers);
   };
 
   return (

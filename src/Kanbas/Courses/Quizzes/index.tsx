@@ -6,10 +6,10 @@ import LessonControlButtons from "../Modules/LessonControlButtons";
 import { IoEllipsisVertical } from "react-icons/io5";
 import ProtectedRoleContent from "../../Security/ProtectedRoleContent";
 import { Link } from "react-router-dom";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { deleteQuiz, setQuizzes, updateQuiz } from "./reducer";
+import { addQuiz, deleteQuiz, setQuizzes, updateQuiz } from "./reducer";
 import * as coursesClient from "../client"
 import * as quizzesClient from "./client"
 import GreenCheckmark from "../Modules/GreenCheckmark";
@@ -20,6 +20,7 @@ export default function Quizzes() {
     const { quizzes } = useSelector((state: any) => state.quizzesReducer);
     const [qidToDelete, setQidToDelete] = useState("");
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const fetchQuizzes = async () => {
         const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
@@ -28,6 +29,13 @@ export default function Quizzes() {
     useEffect(() => {
         fetchQuizzes();
     }, []);
+
+    const createEmptyQuiz = async () => {
+        const newQuiz = await quizzesClient.createEmptyQuiz(cid as string);
+        dispatch(addQuiz(newQuiz));
+        // Navigate to the new quiz details
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${newQuiz._id}`);
+    }
 
     const removeQuiz = async () => {
         await quizzesClient.deleteQuiz(qidToDelete);
@@ -54,11 +62,11 @@ export default function Quizzes() {
                 </div>
                 <div className="col-6">
                     <ProtectedRoleContent role="FACULTY">
-                        <Link id="wd-add-quiz" className="btn btn-lg btn-danger me-1 float-end"
-                            to={`/Kanbas/Courses/${cid}/Quizzes/new`}> {/* TODO IMPLEMENT NEW QUIZZES PAGE */}
+                        <button id="wd-add-quiz" className="btn btn-lg btn-danger me-1 float-end"
+                            onClick={() => createEmptyQuiz()}>
                             <FaPlus className="me-2" />
                             Quiz
-                        </Link>
+                        </button>
                     </ProtectedRoleContent>
                 </div>
             </div>
@@ -73,7 +81,7 @@ export default function Quizzes() {
                     <ul className="wd-lessons list-group rounded-0 ">
                         {
                             quizzes.map((quiz: any) => (
-                                <li className={`${!quiz.details.published ? "unpublished" : ""} wd-lesson list-group-item p-3 ps-1 d-flex`}>
+                                <li className={`${!quiz.details?.published ? "unpublished" : ""} wd-lesson list-group-item p-3 ps-1 d-flex`}>
                                     <div className="col-1">
                                         <BsGripVertical className="me-2 fs-3" />
                                         <SlNotebook className="text-success me-3" />
@@ -82,16 +90,16 @@ export default function Quizzes() {
                                         <h3>
                                             <Link className="wd-quiz-link text-decoration-none text-dark"
                                                 to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/details`}> {/* TODO IMPLEMENT TAKE QUIZ/EDIT QUIZ PAGE BASED ON ROLE */}
-                                                {quiz.details.title}
+                                                {quiz.details?.title}
                                             </Link>
                                         </h3>
-                                        {!quiz.details.published ? <span><b>Not Published</b> | </span> : <></>}
-                                        <b>Available Until</b> {quiz.details.availableDate?.substring(0, 10) ?? "N/A"} | <b>Due</b> {quiz.details.dueDate?.substring(0, 10) ?? "N/A"} | {quiz.details.points} pts | {quiz.questions.length}
+                                        {!quiz.details?.published ? <span><b>Not Published</b> | </span> : <></>}
+                                        <b>Available Until</b> {quiz.details?.availableDate?.substring(0, 10) ?? "N/A"} | <b>Due</b> {quiz.details?.dueDate?.substring(0, 10) ?? "N/A"} | {quiz.details?.points} pts | {quiz.questions?.length || 0} questions
                                     </div>
                                     <div className="col-1">
                                         <div className="float-end">
                                             {
-                                                quiz.details.published
+                                                quiz.details?.published
                                                 ? <GreenCheckmark />
                                                 : <FaUpload className="text-warning" onClick={() => publishQuiz(quiz._id)}/>
                                             }

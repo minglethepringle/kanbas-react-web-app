@@ -2,6 +2,32 @@ import axios from "axios";
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const QUIZZES_API = `${REMOTE_SERVER}/api/quizzes`;
 const axiosWithCredentials = axios.create({ withCredentials: true });
+export const createEmptyQuiz = async (courseId: string) => {
+    const response = await axiosWithCredentials.post(`${REMOTE_SERVER}/api/courses/${courseId}/quizzes`,
+        {
+            title: "Quiz",
+            course: courseId,
+            description: "",
+            points: 0,
+            quizType: "Graded Quiz",
+            assignmentGroup: "Quizzes",
+            shuffleAnswers: false,
+            timeLimit: 20,
+            multipleAttempts: false,
+            showCorrectAnswers: true,
+            accessCode: "",
+            oneQuestionAtATime: false,
+            webcamRequired: false,
+            lockQuestionsAfterAnswering: false,
+            dueDate: "",
+            availableDate: "",
+            untilDate: "",
+            published: false,
+        }
+    );
+    return response.data;
+}
+
 export const deleteQuiz = async (quizId: string) => {
     const response = await axiosWithCredentials.delete(`${QUIZZES_API}/${quizId}`);
     return response.data;
