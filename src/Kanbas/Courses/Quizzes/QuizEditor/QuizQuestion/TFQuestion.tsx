@@ -2,38 +2,36 @@ import React, { useState } from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 
 interface Answer {
-  id: number;
+  id: string;
   text: string;
   isCorrect: boolean;
 }
 
-export default function TFQuestion() {
-  const [answers, setAnswers] = useState<Answer[]>([
-    { id: 1, text: 'True', isCorrect: true },
-    { id: 2, text: 'False', isCorrect: false },
-  ]);
-
-  const markCorrect = (id: number, value: boolean) => {
-    setAnswers(
-      answers.map((answer) => 
-        answer.id === id
-          ? { ...answer, isCorrect: value } 
-          : { ...answer, isCorrect: !value } 
-      )
-    );
+export default function TFQuestion({ answers, setAnswers }: {
+  answers: Answer[];
+  setAnswers: (answers: Answer[]) => void;
+}) {
+  const markCorrect = (id: string, value: boolean) => {
+    const updatedAnswers = answers.map((answer) => {
+      if (answer.id === id) {
+        return { ...answer, isCorrect: value };
+      }
+      return { ...answer, isCorrect: !value };
+    });
+    setAnswers(updatedAnswers);
   };
 
   return (
     <div className="mb-4">
       {answers.map((answer) => (
-        <div 
-          key={answer.id} 
+        <div
+          key={answer.id}
           className="d-flex align-items-center mb-2"
         >
           <span className={answer.isCorrect ? 'fw-bold text-success' : 'text-dark'}>
             {answer.isCorrect ? 'Correct Answer:' : 'Incorrect Answer:'}
           </span>
-          
+
           <div className="col-3">
             <input
               type="text"
@@ -42,7 +40,7 @@ export default function TFQuestion() {
               className={`form-control mx-2 ${answer.isCorrect ? 'bg-success' : 'bg-white'}`}
             />
           </div>
-          
+
           <div className="ms-auto d-flex align-items-center">
             <FaCheck
               className={`mx-2 cursor-pointer ${answer.isCorrect ? 'text-success' : ''}`}

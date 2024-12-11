@@ -88,8 +88,8 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
         switch (question.questionType) {
             case Constants.MC:
                 return <MCQuestion answers={answers} setAnswers={setAnswers} addAnswer={addAnswer} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer}/>
-            // case Constants.TF:
-            //     return <TFQuestion />;
+            case Constants.TF:
+                return <TFQuestion answers={answers} setAnswers={setAnswers}/>;
             // case Constants.FITB:
             //     return <FitBQuestion />;
             default:
@@ -100,7 +100,14 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
     const changeQuestionType = (type: string) => {
         updateQuestion({ ...question, questionType: type });
         // Clear the answers when changing the question type
-        setAnswers([]);
+        if (type === Constants.TF) {
+            setAnswers([
+                { id: crypto.randomUUID(), text: "True", isCorrect: false },
+                { id: crypto.randomUUID(), text: "False", isCorrect: false }
+            ]);
+        } else {
+            setAnswers([]);
+        }
     }
     
     return (
