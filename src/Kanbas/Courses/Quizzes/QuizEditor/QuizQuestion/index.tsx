@@ -126,7 +126,6 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
                         <div className="col-3">
                             <input
                                 className="form-control"
-                                id="wd-name"
                                 value={question.title}
                                 onChange={(e) => updateQuestion({ ...question, title: e.target.value })}
                             />
@@ -134,7 +133,6 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
                         <div className="col-3">
                             <select
                                 className="form-select"
-                                id="wd-group"
                                 value={question.questionType}
                                 onChange={(e) => changeQuestionType(e.target.value)}>
                                 <option selected value={Constants.MC}>
@@ -151,7 +149,6 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
                             </label>
                             <input
                                 className="form-control"
-                                id="wd-question-pts"
                                 value={question.points}
                                 onChange={(e) => updateQuestion({ ...question, points: Number(e.target.value) })}
                             />

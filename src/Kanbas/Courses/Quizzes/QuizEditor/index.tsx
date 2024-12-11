@@ -75,6 +75,7 @@ export default function QuizEditor() {
 
     // Any time questions change, recalculate points
     useEffect(() => {
+        debugger;
         const points = questions.reduce((acc, q: any) => acc + q.points, 0);
         setQuizState({ ...quizState, points });
     }, [questions]);

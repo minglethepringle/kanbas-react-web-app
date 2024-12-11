@@ -51,15 +51,6 @@ export default function QuestionsEditor({ questions, setQuestions }: QuestionsEd
             return q;
         });
 
-        // Recalculate points: sum of all points in all questions
-        const totalPoints = updatedQuestions.reduce((acc: number, q: QuestionType) => acc + q.points, 0);
-        updatedQuestions = updatedQuestions.map((q: QuestionType) => {
-            return {
-                ...q,
-                points: totalPoints
-            };
-        });
-
         setQuestions(updatedQuestions);
     };
 
