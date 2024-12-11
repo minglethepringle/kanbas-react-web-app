@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Constants from "./constants";
 import FitBQuestion from "./FitBQuestion";
 import MCQuestion from "./MCQuestion";
@@ -31,6 +31,11 @@ interface Answer {
 
 export default function QuizQuestion({ question, updateQuestion, deleteQuestion }: QuizQuestionProps) {
     const [answers, setAnswers] = useState<Answer[]>([]);
+
+    useEffect(() => {
+        // Any time answers updates, update the question object
+        updateQuestion({ ...question, properties: { choices: answers } });
+    }, [answers]);
 
     // Renders the prompt of the current question
     const renderPrompt = () => {
@@ -71,9 +76,6 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
                 a.id === answer.id ? answer : a
             )
         );
-
-        // Update in the question object
-        updateQuestion({ ...question, properties: { choices: answers } });
     };
 
     // Delete answer from the question
@@ -85,18 +87,21 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
     const renderQuizProperty = () => {
         switch (question.questionType) {
             case Constants.MC:
-                // Dude fml my brain is fried
-                return answers.map((answer) => (
-                    <MCQuestion answer={answer} addAnswer={addAnswer} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer}/>
-                ))
-            case Constants.TF:
-                return <TFQuestion />;
-            case Constants.FITB:
-                return <FitBQuestion />;
+                return <MCQuestion answers={answers} setAnswers={setAnswers} addAnswer={addAnswer} updateAnswer={updateAnswer} deleteAnswer={deleteAnswer}/>
+            // case Constants.TF:
+            //     return <TFQuestion />;
+            // case Constants.FITB:
+            //     return <FitBQuestion />;
             default:
                 return null;
         }
     };
+
+    const changeQuestionType = (type: string) => {
+        updateQuestion({ ...question, questionType: type });
+        // Clear the answers when changing the question type
+        setAnswers([]);
+    }
     
     return (
         <div>
@@ -116,7 +121,7 @@ export default function QuizQuestion({ question, updateQuestion, deleteQuestion 
                                 className="form-select"
                                 id="wd-group"
                                 value={question.questionType}
-                                onChange={(e) => updateQuestion({ ...question, questionType: e.target.value })}>
+                                onChange={(e) => changeQuestionType(e.target.value)}>
                                 <option selected value={Constants.MC}>
                                     Multiple Choice
                                 </option>
