@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import * as Constants from "./constants";
+import * as Constants from "../../constants";
 import FitBQuestion from "./FitBQuestion";
 import MCQuestion from "./MCQuestion";
 import TFQuestion from "./TFQuestion";

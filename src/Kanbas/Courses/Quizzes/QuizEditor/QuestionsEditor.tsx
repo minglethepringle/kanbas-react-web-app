@@ -4,7 +4,7 @@ import * as client from "../client";
 import { useParams } from "react-router";
 import QuizQuestion from "./QuizQuestion";
 import { useSelector, useDispatch } from "react-redux";
-import { MC } from "./QuizQuestion/constants";
+import { MC } from "../constants";
 
 interface QuestionsEditorProps {
     questions: any;
