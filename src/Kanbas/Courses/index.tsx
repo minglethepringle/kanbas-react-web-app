@@ -12,6 +12,7 @@ import * as courseClient from "./client";
 import Quizzes from "./Quizzes";
 import QuizDetails from "./Quizzes/QuizDetails";
 import QuizEditor from "./Quizzes/QuizEditor";
+import QuizTest from "./Quizzes/QuizTest";
 export default function Courses({ courses }: { courses: any[]; }) {
     const { cid } = useParams();
     const { pathname } = useLocation();
@@ -50,6 +51,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
                         <Route path="Quizzes" element={<Quizzes />} />
                         <Route path="Quizzes/:qid" element={<QuizEditor />} />
                         <Route path="Quizzes/:qid/details" element={<QuizDetails />} />
+                        <Route path="Quizzes/:qid/test" element={<QuizTest/>} />
                     </Routes>
                 </div>
             </div>

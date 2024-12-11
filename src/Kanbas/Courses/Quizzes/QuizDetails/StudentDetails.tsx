@@ -97,8 +97,6 @@ export default function FacultyDetails() {
                             <Link
                                 className="wd-quiz-link text-decoration-none text-dark"
                                 to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/test`}>
-                                {" "}
-                                //TODO: Change to the actual editing later?
                                 <button className="btn btn-danger mb-2 me-2" id="wd-signout-btn">
                                     Take Quiz
                                 </button>

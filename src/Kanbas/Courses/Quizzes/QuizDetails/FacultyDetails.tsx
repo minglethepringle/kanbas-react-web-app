@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
+import * as coursesClient from "../../client";
 import { Link } from "react-router-dom";
+import { setQuizzes } from "../reducer";
 
 export default function FacultyDetails() {
     const { cid, qid } = useParams();
+    const dispatch = useDispatch();
     const { quizzes } = useSelector((state: any) => state.quizzesReducer);
+
+    const fetchQuizzes = async () => {
+        const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
+        dispatch(setQuizzes(quizzes));
+    };
+    useEffect(() => {
+        if (quizzes?.length === 0) fetchQuizzes();
+    }, []);
 
     const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid)
 
@@ -17,8 +28,7 @@ export default function FacultyDetails() {
                     <div className="col text-center">
                         <Link
                             className="wd-quiz-link text-decoration-none text-dark"
-                            to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/preview`}>
-                            {/* //TODO: Bring us to a view only of the actual quiz */}
+                            to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/test`}>
                             <button className="btn btn-secondary mb-2 me-2" id="wd-signout-btn">
                                 Preview
                             </button>
