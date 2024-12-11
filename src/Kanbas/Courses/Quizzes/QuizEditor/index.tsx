@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
-import { updateQuiz, addQuiz } from "../reducer";
+import { updateQuiz, addQuiz, setQuizzes } from "../reducer";
 import DetailsEditor from "./DetailsEditor";
 import QuestionsEditor from "./QuestionsEditor";
 import * as coursesClient from "../../client";
@@ -16,6 +16,14 @@ export default function QuizEditor() {
     const dispatch = useDispatch();
     const { quizzes } = useSelector((state: any) => state.quizzesReducer);
     const [questions, setQuestions] = useState([]);
+
+    const fetchQuizzes = async () => {
+        const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
+        dispatch(setQuizzes(quizzes));
+    };
+    useEffect(() => {
+        if (quizzes?.length === 0) fetchQuizzes();
+    }, []);
 
     // Lift all the state up
     const [quizState, setQuizState] = useState({
@@ -46,7 +54,7 @@ export default function QuizEditor() {
     // const editing = qid !== "new";
     const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid);
     useEffect(() => {
-        // if (existingQuiz && quizState._id === "") {
+        if (existingQuiz) {
             setQuizState({
                 _id: existingQuiz._id,
                 title: existingQuiz.details?.title || "Quiz",
@@ -70,12 +78,11 @@ export default function QuizEditor() {
                 published: existingQuiz.details?.published || false,
             });
             setQuestions(existingQuiz.questions || []);
-        // }
+        }
     }, [existingQuiz]);
 
     // Any time questions change, recalculate points
     useEffect(() => {
-        debugger;
         const points = questions.reduce((acc, q: any) => acc + q.points, 0);
         setQuizState({ ...quizState, points });
     }, [questions]);
@@ -91,7 +98,7 @@ export default function QuizEditor() {
     // }, [qid]);
 
     // Handle saving quiz
-    const handleSave = async () => {
+    const handleSave = async (published: boolean) => {
         // Remove all _id from questions
         const qs: any = questions ? questions.map((question: any) => {
             const { _id, ...rest } = question;
@@ -119,7 +126,7 @@ export default function QuizEditor() {
                 dueDate: quizState.dueDate,
                 availableDate: quizState.availableDate,
                 untilDate: quizState.untilDate,
-                published: quizState.published,
+                published: published || quizState.published,
             },
         };
 
@@ -169,9 +176,14 @@ export default function QuizEditor() {
                     <div>
                         <hr />
                         <button
+                            className="btn btn-lg btn-success me-1 float-end"
+                            onClick={() => handleSave(true)}>
+                            Save and Publish
+                        </button>
+                        <button
                             id="wd-assignment-editor-save"
                             className="btn btn-lg btn-danger me-1 float-end"
-                            onClick={handleSave}>
+                            onClick={() => handleSave(false)}>
                             Save
                         </button>
                         <Link
