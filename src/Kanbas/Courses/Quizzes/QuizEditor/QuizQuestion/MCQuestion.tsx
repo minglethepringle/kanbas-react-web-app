@@ -7,7 +7,8 @@ interface Answer {
     isCorrect: boolean;
 }
 
-export default function MCQuestion({ answers, updateAnswers, addAnswer, updateAnswer, deleteAnswer }: {
+export default function MCQuestion({ editing, answers, updateAnswers, addAnswer, updateAnswer, deleteAnswer }: {
+    editing: boolean;
     answers: Answer[];
     updateAnswers: (answers: Answer[]) => void;
     addAnswer: () => void;
@@ -36,10 +37,12 @@ export default function MCQuestion({ answers, updateAnswers, addAnswer, updateAn
                             <span className={answer.isCorrect ? 'fw-bold text-success' : 'text-dark'}>
                                 {answer.isCorrect ? 'Correct Answer:' : 'Possible Answer:'}
                             </span>
+                            
                             <div className="col-4">
                                 <input
                                     type="text"
                                     value={answer.text}
+                                    disabled={!editing}
                                     onChange={(e) => updateAnswer({ ...answer, text: e.target.value }) }
                                     className={`form-control mx-2 ${answer.isCorrect ? 'bg-success' : 'bg-white'}`}
                                 />
@@ -50,27 +53,28 @@ export default function MCQuestion({ answers, updateAnswers, addAnswer, updateAn
                                     type="radio"
                                     name="correct-answer"
                                     checked={answer.isCorrect}
+                                    disabled={!editing}
                                     onChange={() => markCorrect(answer.id)}
                                     className="mx-2"
                                 />
-                                <FaTrash
+                                {editing && <FaTrash
                                     className="mx-2 cursor-pointer"
                                     onClick={() => deleteAnswer(answer.id)}
-                                />
+                                />}
                             </div>
                         </div>
                     );
                 })
             }
             
-            <div className="d-flex justify-content-center">
+            {editing && <div className="d-flex justify-content-center">
                 <button
                     onClick={addAnswer}
                     className="btn btn-outline-danger mt-3"
                 >
                     + Add Another Answer
                 </button>
-            </div>
+            </div> }
         </div>
     );
 }

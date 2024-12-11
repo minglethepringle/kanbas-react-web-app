@@ -7,11 +7,13 @@ interface Answer {
   isCorrect: boolean;
 }
 
-export default function TFQuestion({ answers, updateAnswers }: {
+export default function TFQuestion({ editing, answers, updateAnswers }: {
+  editing: boolean;
   answers: Answer[];
   updateAnswers: (answers: Answer[]) => void;
 }) {
   const markCorrect = (id: string, value: boolean) => {
+    if (!editing) return;
     const updatedAnswers = answers.map((answer) => {
       if (answer.id === id) {
         return { ...answer, isCorrect: value };

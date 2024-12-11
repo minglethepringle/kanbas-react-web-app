@@ -7,7 +7,8 @@ interface Answer {
   isCorrect: boolean;
 }
 
-export default function FitBQuestion({ answers, updateAnswers, addAnswer, updateAnswer, deleteAnswer }: {
+export default function FitBQuestion({ editing, answers, updateAnswers, addAnswer, updateAnswer, deleteAnswer }: {
+  editing: boolean;
   answers: Answer[];
   updateAnswers: (answers: Answer[]) => void;
   addAnswer: () => void;
@@ -39,6 +40,7 @@ export default function FitBQuestion({ answers, updateAnswers, addAnswer, update
             <input
               type="text"
               value={answer.text}
+              disabled={!editing}
               onChange={(e) => updateAnswer({ ...answer, text: e.target.value }) }
               className={`form-control mx-2 ${answer.isCorrect ? 'bg-success' : 'bg-white'}`}
             />
@@ -49,26 +51,27 @@ export default function FitBQuestion({ answers, updateAnswers, addAnswer, update
             <input
               type="checkbox"
               name="correct-answer"
+              disabled={!editing}
               checked={answer.isCorrect}
               onChange={() => toggleCorrect(answer.id)}
               className="mx-2"
             />
-            <FaTrash
+            {editing && <FaTrash
               className="mx-2 cursor-pointer"
               onClick={() => deleteAnswer(answer.id)}
-            />
+            />}
           </div>
         </div>
       ))}
 
-      <div className="d-flex justify-content-center">
+      {editing && <div className="d-flex justify-content-center">
         <button
           onClick={addAnswer}
           className="btn btn-outline-danger mt-3"
         >
           + Add Another Answer
         </button>
-      </div>
+      </div>}
     </div>
   );
 }
