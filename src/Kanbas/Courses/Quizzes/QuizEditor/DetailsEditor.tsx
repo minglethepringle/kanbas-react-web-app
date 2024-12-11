@@ -53,12 +53,13 @@ export default function DetailsEditor({ quizState, setQuizState }: DetailsEditor
                         </label>
                     </div>
                     <div className="col-8">
-                        <input
+                        {/* <input
                             className="form-control"
                             id="wd-points"
                             value={quizState.points}
                             onChange={(e) => updateField("points", e.target.value)}
-                        />
+                        /> */}
+                        <span>{quizState.points}</span>
                     </div>
                 </div>
 

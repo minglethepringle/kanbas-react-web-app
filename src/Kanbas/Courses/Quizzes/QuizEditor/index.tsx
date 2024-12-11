@@ -73,15 +73,21 @@ export default function QuizEditor() {
         // }
     }, [existingQuiz]);
 
-    // Load in existing quiz questions
+    // Any time questions change, recalculate points
     useEffect(() => {
-        const fetchQuestions = async () => {
-            const questions = await quizzesClient.findQuestionsForQuiz(qid as string);
-            setQuestions(questions);
-        };
-        // if (qid !== "new")
-            // fetchQuestions();
-    }, [qid]);
+        const points = questions.reduce((acc, q: any) => acc + q.points, 0);
+        setQuizState({ ...quizState, points });
+    }, [questions]);
+
+    // // Load in existing quiz questions
+    // useEffect(() => {
+    //     const fetchQuestions = async () => {
+    //         const questions = await quizzesClient.findQuestionsForQuiz(qid as string);
+    //         setQuestions(questions);
+    //     };
+    //     // if (qid !== "new")
+    //         // fetchQuestions();
+    // }, [qid]);
 
     // Handle saving quiz
     const handleSave = async () => {
