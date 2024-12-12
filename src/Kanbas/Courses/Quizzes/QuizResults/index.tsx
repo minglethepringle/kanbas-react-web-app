@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import * as quizClient from "../client";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 interface Answer {
     questionId: string;
@@ -100,6 +101,8 @@ export default function QuizResults() {
                     </div>
                 ))
             }
+
+            <Link to={`/Kanbas/Courses/${qid}/Quizzes/${qid}/details`} className="btn btn-danger">Retake Quiz</Link>
 
         </div>
     );

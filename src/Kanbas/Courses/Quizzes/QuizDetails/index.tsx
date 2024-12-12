@@ -17,6 +17,12 @@ export default function QuizDetails() {
             <ProtectedRoleContent role="STUDENT">
                 <StudentDetails />
             </ProtectedRoleContent>
+
+            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/results`}
+            className="btn btn-secondary">
+                View Latest Result
+            </Link>
+
         </div>
     );
 }

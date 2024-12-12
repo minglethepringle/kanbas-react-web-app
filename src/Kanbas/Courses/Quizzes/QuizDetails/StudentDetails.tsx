@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 
-export default function FacultyDetails() {
+export default function StudentDetails() {
     const [_id, setId] = useState("");
     const [title, setTitle] = useState("Quiz");
     // const [course, setCourse] = useState("");
