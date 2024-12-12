@@ -17,14 +17,23 @@ import { format, isBefore, isAfter, parseISO } from 'date-fns';
 
 export default function Quizzes() {
     const { cid } = useParams();
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { quizzes } = useSelector((state: any) => state.quizzesReducer);
     const [qidToDelete, setQidToDelete] = useState("");
+    const [quizScoreMap, setQuizScoreMap] = useState(new Map());
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const fetchQuizzes = async () => {
         const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
         dispatch(setQuizzes(quizzes));
+
+        let quizScoreMap = new Map();
+        for (let quiz of quizzes) {
+            const attempt = await quizzesClient.getLatestAttempt(quiz._id, currentUser._id);
+            if (attempt) quizScoreMap.set(quiz._id, attempt.score);
+        }
+        setQuizScoreMap(quizScoreMap);
     };
     useEffect(() => {
         fetchQuizzes();
@@ -117,7 +126,10 @@ export default function Quizzes() {
                                         </h3>
                                         {!quiz.details?.published ? <span><b>Not Published</b> | </span> : <></>}
                                         {handleAvailableDates(quiz)}
-                                        <b>Due</b> {quiz.details?.dueDate?.substring(0, 10) ?? "N/A"} | {quiz.details?.points} pts | {quiz.questions?.length || 0} questions
+                                        <b>Due</b> {quiz.details?.dueDate?.substring(0, 10) ?? "N/A"} | {quiz.details?.points} pts | {quiz.questions?.length || 0} questions {}
+                                        <ProtectedRoleContent role="STUDENT">
+                                            {quizScoreMap.has(quiz._id) ? <span> | <b>Latest Score</b> {quizScoreMap.get(quiz._id)}/{quiz.details?.points}</span> : <></>}
+                                        </ProtectedRoleContent>
                                     </div>
                                     <div className="col-1 d-flex flex-col align-items-center">
                                         {

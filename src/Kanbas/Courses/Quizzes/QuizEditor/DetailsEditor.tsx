@@ -175,7 +175,7 @@ export default function DetailsEditor({ quizState, setQuizState }: DetailsEditor
                                     Multiple Attempts
                                 </label>
                             </div>
-                            <div className="form-group row my-3">
+                            {quizState.multipleAttempts && <div className="form-group row my-3">
                                 <label htmlFor="wd-how-many-attempts" className="col-sm-4 col-form-label">
                                     How Many Attempts
                                 </label>
@@ -189,7 +189,7 @@ export default function DetailsEditor({ quizState, setQuizState }: DetailsEditor
                                         onChange={(e) => updateField("howManyAttempts", Number(e.target.value))}
                                     />
                                 </div>
-                            </div>
+                            </div> }
                             <div className="form-check my-3">
                                 <input
                                     className="form-check-input"

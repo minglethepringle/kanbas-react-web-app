@@ -24,7 +24,7 @@ interface Result {
 }
 
 export default function QuizResults() {
-    const { qid } = useParams();
+    const { cid, qid } = useParams();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [latestResult, setLatestResult] = useState<Result>();
 
@@ -102,7 +102,7 @@ export default function QuizResults() {
                 ))
             }
 
-            <Link to={`/Kanbas/Courses/${qid}/Quizzes/${qid}/details`} className="btn btn-danger">Retake Quiz</Link>
+            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/details`} className="btn btn-danger">Retake Quiz</Link>
 
         </div>
     );

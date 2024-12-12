@@ -14,17 +14,6 @@ export default function QuizEditor() {
     const { cid, qid } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { quizzes } = useSelector((state: any) => state.quizzesReducer);
-    const [questions, setQuestions] = useState([]);
-
-    const fetchQuizzes = async () => {
-        const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
-        dispatch(setQuizzes(quizzes));
-    };
-    useEffect(() => {
-        if (quizzes?.length === 0) fetchQuizzes();
-    }, []);
-
     // Lift all the state up
     const [quizState, setQuizState] = useState({
         _id: qid,
@@ -50,38 +39,41 @@ export default function QuizEditor() {
         untilDate: "",
         published: false,
     });
+    const [questions, setQuestions] = useState([]);
 
-    // Load existing quiz details
-    // const editing = qid !== "new";
-    const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid);
+    const fetchQuizzes = async () => {
+        const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
+        dispatch(setQuizzes(quizzes));
+
+        const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid);
+        setQuizState({
+            _id: existingQuiz._id,
+            title: existingQuiz.details?.title || "Quiz",
+            course: existingQuiz.course || cid,
+            questions: existingQuiz.questions || [],
+            description: existingQuiz.details?.description || "",
+            points: existingQuiz.details?.points || 0,
+            assignmentGroup: existingQuiz.details?.assignmentGroup || "Quizzes",
+            quizType: existingQuiz.details?.quizType || "Graded Quiz",
+            shuffleAnswers: existingQuiz.details?.shuffleAnswers || false,
+            timeLimit: existingQuiz.details?.timeLimit || 20,
+            multipleAttempts: existingQuiz.details?.multipleAttempts || false,
+            howManyAttempts: existingQuiz.details?.howManyAttempts || 1,
+            showCorrectAnswers: existingQuiz.details?.showCorrectAnswers || true,
+            accessCode: existingQuiz.details?.accessCode || "",
+            oneQuestionAtATime: existingQuiz.details?.oneQuestionAtATime || false,
+            webcamRequired: existingQuiz.details?.webcamRequired || false,
+            lockQuestionsAfterAnswering: existingQuiz.details?.lockQuestionsAfterAnswering || false,
+            dueDate: existingQuiz.details?.dueDate?.substring(0, 10) || "",
+            availableDate: existingQuiz.details?.availableDate?.substring(0, 10) || "",
+            untilDate: existingQuiz.details?.untilDate?.substring(0, 10) || "",
+            published: existingQuiz.details?.published || false,
+        });
+        setQuestions(existingQuiz.questions || []);
+    };
     useEffect(() => {
-        if (existingQuiz) {
-            setQuizState({
-                _id: existingQuiz._id,
-                title: existingQuiz.details?.title || "Quiz",
-                course: existingQuiz.course || cid,
-                questions: existingQuiz.questions || [],
-                description: existingQuiz.details?.description || "",
-                points: existingQuiz.details?.points || 0,
-                assignmentGroup: existingQuiz.details?.assignmentGroup || "Quizzes",
-                quizType: existingQuiz.details?.quizType || "Graded Quiz",
-                shuffleAnswers: existingQuiz.details?.shuffleAnswers || false,
-                timeLimit: existingQuiz.details?.timeLimit || 20,
-                multipleAttempts: existingQuiz.details?.multipleAttempts  ||  false,
-                howManyAttempts: existingQuiz.details?.howManyAttempts || 1,
-                showCorrectAnswers: existingQuiz.details?.showCorrectAnswers || true,
-                accessCode: existingQuiz.details?.accessCode || "",
-                oneQuestionAtATime: existingQuiz.details?.oneQuestionAtATime || false,
-                webcamRequired: existingQuiz.details?.webcamRequired || false,
-                lockQuestionsAfterAnswering: existingQuiz.details?.lockQuestionsAfterAnswering || false,
-                dueDate: existingQuiz.details?.dueDate?.substring(0, 10) || "",
-                availableDate: existingQuiz.details?.availableDate?.substring(0, 10) || "",
-                untilDate: existingQuiz.details?.untilDate?.substring(0, 10) || "",
-                published: existingQuiz.details?.published || false,
-            });
-            setQuestions(existingQuiz.questions || []);
-        }
-    }, [existingQuiz]);
+        fetchQuizzes();
+    }, []);
 
     // Any time questions change, recalculate points
     useEffect(() => {
@@ -120,7 +112,7 @@ export default function QuizEditor() {
                 shuffleAnswers: quizState.shuffleAnswers,
                 timeLimit: quizState.timeLimit,
                 multipleAttempts: quizState.multipleAttempts,
-                howManyAttempts: quizState.howManyAttempts,
+                howManyAttempts: quizState.multipleAttempts ? quizState.howManyAttempts : 1,
                 showCorrectAnswers: quizState.showCorrectAnswers,
                 accessCode: quizState.accessCode,
                 oneQuestionAtATime: quizState.oneQuestionAtATime,

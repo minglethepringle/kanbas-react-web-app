@@ -4,9 +4,26 @@ import { Link, useParams } from "react-router-dom";
 import ProtectedRoleContent from "../../../Security/ProtectedRoleContent";
 import FacultyDetails from "./FacultyDetails";
 import StudentDetails from "./StudentDetails";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import * as quizzesClient from "../client";
 
 export default function QuizDetails() {
     const { cid, qid } = useParams();
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const [latestAttempt, setLatestAttempt] = useState<any>();
+
+    const fetchLatestAttempt = async () => {
+        const attempt = await quizzesClient.getLatestAttempt(
+            qid!,
+            currentUser._id,
+        );
+        setLatestAttempt(attempt);
+    }
+
+    useEffect(() => {
+        fetchLatestAttempt();
+    }, []);
 
     return (
         <div id="wd-quiz-details">
@@ -18,10 +35,13 @@ export default function QuizDetails() {
                 <StudentDetails />
             </ProtectedRoleContent>
 
-            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/results`}
-            className="btn btn-secondary">
-                View Latest Result
-            </Link>
+            {
+                latestAttempt &&
+                <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/results`}
+                    className="btn btn-secondary">
+                    View Latest Result
+                </Link>
+            }
 
         </div>
     );
