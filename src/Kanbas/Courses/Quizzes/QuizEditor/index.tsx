@@ -55,7 +55,7 @@ export default function QuizEditor() {
             points: existingQuiz.details?.points || 0,
             assignmentGroup: existingQuiz.details?.assignmentGroup || "Quizzes",
             quizType: existingQuiz.details?.quizType || "Graded Quiz",
-            shuffleAnswers: existingQuiz.details?.shuffleAnswers || false,
+            shuffleAnswers: existingQuiz.details?.shuffleAnswers || true,
             timeLimit: existingQuiz.details?.timeLimit || 20,
             multipleAttempts: existingQuiz.details?.multipleAttempts || false,
             howManyAttempts: existingQuiz.details?.howManyAttempts || 1,

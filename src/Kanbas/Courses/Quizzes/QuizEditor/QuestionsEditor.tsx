@@ -7,83 +7,96 @@ import { useSelector, useDispatch } from "react-redux";
 import { MC } from "../constants";
 
 interface QuestionsEditorProps {
-    questions: any;
-    setQuestions: (state: any) => void;
+  questions: any;
+  setQuestions: (state: any) => void;
 }
 
 interface QuestionType {
-    _id: string,
-    qid: string,
-    questionType: "Multiple Choice" | "True False" | "Fill in the Blank",
-    title: string,
-    points: number,
-    question: string,
-    properties: any
+  _id: string;
+  qid: string;
+  questionType: "Multiple Choice" | "True False" | "Fill in the Blank";
+  title: string;
+  points: number;
+  question: string;
+  properties: any;
 }
 
-export default function QuestionsEditor({ questions, setQuestions }: QuestionsEditorProps) {
-    const { qid } = useParams();
+export default function QuestionsEditor({
+  questions,
+  setQuestions,
+}: QuestionsEditorProps) {
+  const { qid } = useParams();
 
-    // Add a new question LOCALLY (not in the database)
-    const createNewQuestion = async () => {
-        const newQuestion = {
-            _id: crypto.randomUUID(),
-            qid: qid,
-            questionType: MC,
-            title: "New Question",
-            points: 0,
-            question: "Question",
-            properties: {
-                choices: []
-            }
-        };
-        setQuestions([...questions, newQuestion]);
+  // Add a new question LOCALLY (not in the database)
+  const createNewQuestion = async () => {
+    const newQuestion = {
+      _id: crypto.randomUUID(),
+      qid: qid,
+      questionType: MC,
+      title: "New Question",
+      points: 0,
+      question: "Question",
+      properties: {
+        choices: [],
+      },
     };
+    setQuestions([...questions, newQuestion]);
+  };
 
-    // Updates question details locally in questions state
-    const updateQuestion = (question: QuestionType) => {
-        let updatedQuestions = questions.map((q: QuestionType) => {
-            // If the question is the one being updated,
-            // replace it with the new question
-            if (q._id === question._id) {
-                return question;
-            }
-            return q;
-        });
+  // Updates question details locally in questions state
+  const updateQuestion = (question: QuestionType) => {
+    let updatedQuestions = questions.map((q: QuestionType) => {
+      // If the question is the one being updated,
+      // replace it with the new question
+      if (q._id === question._id) {
+        return question;
+      }
+      return q;
+    });
 
-        setQuestions(updatedQuestions);
-    };
+    setQuestions(updatedQuestions);
+  };
 
-    // Deletes a question locally in questions state
-    const deleteQuestion = (id: string) => {
-        const updatedQuestions = questions.filter((q: QuestionType) => q._id !== id);
-        setQuestions(updatedQuestions);
-    }
-
-    return (
-        <div>
-            <div className="container">
-                {
-                    questions.map((question: QuestionType) => {
-                        return <QuizQuestion 
-                                            key={question._id}
-                                            question={question}
-                                            updateQuestion={updateQuestion}
-                                            deleteQuestion={deleteQuestion}/>;
-                    })
-                }
-                
-                <div className="row">
-                    <div className="col text-center">
-                        <button
-                            onClick={createNewQuestion}
-                            className="btn btn-secondary mt-3">
-                            <FaPlus className="me-2" />
-                            New Question
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+  // Deletes a question locally in questions state
+  const deleteQuestion = (id: string) => {
+    const updatedQuestions = questions.filter(
+      (q: QuestionType) => q._id !== id
     );
+    setQuestions(updatedQuestions);
+  };
+
+  // Calculates the total # of points
+  const totalPoints = questions.reduce(
+    (acc: number, curr: QuestionType) => acc + curr.points,
+    0
+  );
+
+  return (
+    <div>
+      <div className="container">
+        <h1 className="ps-3 pt-3">{"Total Points: " + totalPoints}</h1>
+        {questions.map((question: QuestionType) => {
+          return (
+            <QuizQuestion
+              key={question._id}
+              question={question}
+              updateQuestion={updateQuestion}
+              deleteQuestion={deleteQuestion}
+            />
+          );
+        })}
+        <div className="row">
+          <div className="col text-center">
+            <button
+              onClick={createNewQuestion}
+              className="btn btn-secondary mt-3"
+            >
+              <FaPlus className="me-2" />
+              New Question
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
