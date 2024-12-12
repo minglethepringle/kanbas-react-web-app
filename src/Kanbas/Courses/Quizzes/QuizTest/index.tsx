@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import * as coursesClient from "../../client";
 import * as quizClient from "../client";
 import * as quizTestClient from "./client";
@@ -8,6 +8,7 @@ import { setQuizzes } from "../reducer";
 import ProtectedRoleContent from "../../../Security/ProtectedRoleContent";
 import { FaExclamationCircle } from "react-icons/fa";
 import QuizQuestion from "./QuizQuestion";
+import { start } from "repl";
 
 interface QuestionType {
     _id: string;
@@ -30,6 +31,8 @@ export default function QuizTest() {
     const { quizzes } = useSelector((state: any) => state.quizzesReducer);
     const [questions, setQuestions] = useState<QuestionType[]>([]);
     const [answers, setAnswers] = useState<AnswerSubmission[]>([]);
+    const [startDate, setStartDate] = useState(new Date());
+    const navigate = useNavigate();
 
     const { currentUser } = useSelector((state: any) => state.accountReducer);
 
@@ -39,6 +42,9 @@ export default function QuizTest() {
     };
     useEffect(() => {
         if (quizzes?.length === 0) fetchQuizzes();
+
+        // At start, set the start date
+        setStartDate(new Date());
     }, []);
 
     const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid);
@@ -88,6 +94,7 @@ export default function QuizTest() {
             // Handle successful submission
             alert("Quiz submitted successfully!");
             // Optionally navigate or update UI
+            navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/results`);
         } catch (error) {
             console.error("Error submitting quiz:", error);
             alert("Failed to submit quiz. Please try again.");
@@ -114,7 +121,7 @@ export default function QuizTest() {
                 </div>
             </ProtectedRoleContent>
             <p>
-                Started: {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
+                Started: {startDate.toLocaleDateString()} at {startDate.toLocaleTimeString()}
             </p>
 
             <h2>Quiz Instructions</h2>
@@ -127,12 +134,10 @@ export default function QuizTest() {
                 return <QuizQuestion key={question._id} question={question} currentAnswer={currentAnswer} onAnswerChange={(answer: string) => handleAnswerChange(question._id, answer)}/>
             })}
 
-            <ProtectedRoleContent role="STUDENT">
-                <hr />
-                <button type="submit" className="btn btn-danger float-end" onClick={() => handleSubmit()}>
-                    Submit
-                </button>
-            </ProtectedRoleContent>
+            <hr />
+            <button type="submit" className="btn btn-danger float-end" onClick={() => handleSubmit()}>
+                Submit
+            </button>
         </div>
     );
 }

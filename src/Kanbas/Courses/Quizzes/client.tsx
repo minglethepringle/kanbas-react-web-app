@@ -70,3 +70,13 @@ export const updateQuestion = async (quizId: string, question: any) => {
     const { data } = await axiosWithCredentials.put(`${QUIZZES_API}/${quizId}/questions/${question._id}`, question);
     return data;
 };
+
+export const getNumberOfAttempts = async (quizId: string, userId: string) => {
+    const response = await axios.get(`${QUIZZES_API}/${quizId}/attempts/${userId}`);
+    return response.data;
+}
+
+export const getLatestAttempt = async (quizId: string, userId: string) => {
+    const response = await axios.get(`${QUIZZES_API}/${quizId}/attempts/${userId}/latest`);
+    return response.data;
+}
