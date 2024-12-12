@@ -11,7 +11,7 @@ export const createEmptyQuiz = async (courseId: string) => {
             points: 0,
             quizType: "Graded Quiz",
             assignmentGroup: "Quizzes",
-            shuffleAnswers: false,
+            shuffleAnswers: true,
             timeLimit: 20,
             multipleAttempts: false,
             showCorrectAnswers: true,
