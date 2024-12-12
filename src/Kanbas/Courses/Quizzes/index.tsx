@@ -13,7 +13,7 @@ import { addQuiz, deleteQuiz, setQuizzes, updateQuiz } from "./reducer";
 import * as coursesClient from "../client"
 import * as quizzesClient from "./client"
 import GreenCheckmark from "../Modules/GreenCheckmark";
-
+import { format, isBefore, isAfter, parseISO } from 'date-fns';
 
 export default function Quizzes() {
     const { cid } = useParams();
@@ -46,6 +46,23 @@ export default function Quizzes() {
         const updatedQuiz = await quizzesClient.publishQuiz(qid);
         dispatch(updateQuiz(updatedQuiz));
     }
+
+    const handleAvailableDates = (quiz: any) => {
+        const currentDate = new Date();
+        const availableDate = quiz.details?.availableDate ? parseISO(quiz.details.availableDate) : null;
+        const dueDate = quiz.details?.dueDate ? parseISO(quiz.details.dueDate) : null;
+        const availableUntil = quiz.details?.untilDate ? parseISO(quiz.details.untilDate) : null;
+
+        if (availableDate && isBefore(currentDate, availableDate)) {
+            return <span><b>Not Available Until</b> {format(availableDate, 'yyyy-MM-dd')} | </span>;
+        } else if (availableUntil && dueDate && isAfter(currentDate, availableUntil)) {
+            return <span><b>Closed</b> | </span>;
+        } else if (availableUntil && dueDate) {
+            return <span><b>Available Until</b> {format(availableUntil, 'yyyy-MM-dd')} | </span>;
+        } else {
+            return <span><b>Always Available</b> | </span>;
+        }
+    };
 
     return (
         <div id="wd-quizzes">
@@ -81,34 +98,71 @@ export default function Quizzes() {
                     <ul className="wd-lessons list-group rounded-0 ">
                         {
                             quizzes.map((quiz: any) => (
-                                <li className={`${!quiz.details?.published ? "unpublished" : ""} wd-lesson list-group-item p-3 ps-1 d-flex`}>
-                                    <div className="col-1">
-                                        <BsGripVertical className="me-2 fs-3" />
-                                        <SlNotebook className="text-success me-3" />
-                                    </div>
-                                    <div className="col">
-                                        <h3>
-                                            <Link className="wd-quiz-link text-decoration-none text-dark"
-                                                to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/details`}> {/* TODO IMPLEMENT TAKE QUIZ/EDIT QUIZ PAGE BASED ON ROLE */}
-                                                {quiz.details?.title}
-                                            </Link>
-                                        </h3>
-                                        {!quiz.details?.published ? <span><b>Not Published</b> | </span> : <></>}
-                                        <b>Available Until</b> {quiz.details?.availableDate?.substring(0, 10) ?? "N/A"} | <b>Due</b> {quiz.details?.dueDate?.substring(0, 10) ?? "N/A"} | {quiz.details?.points} pts | {quiz.questions?.length || 0} questions
-                                    </div>
-                                    <div className="col-1">
-                                        <div className="float-end">
-                                            {
-                                                quiz.details?.published
-                                                ? <GreenCheckmark />
-                                                : <FaUpload className="text-warning" onClick={() => publishQuiz(quiz._id)}/>
-                                            }
+                                quiz.details?.published ? (
+                                    // Edit here
+                                    <li className={`${!quiz.details?.published ? "unpublished" : ""} wd-lesson list-group-item p-3 ps-1 d-flex`}>
+                                        <div className="col-1">
+                                            <BsGripVertical className="me-2 fs-3" />
+                                            <SlNotebook className="text-success me-3" />
                                         </div>
-                                        <ProtectedRoleContent role="FACULTY">
-                                            <FaTrash className="text-danger me-2 mt-1 float-end" data-bs-toggle="modal" data-bs-target="#wd-delete-quiz-dialog" onClick={() => setQidToDelete(quiz._id)} />
-                                        </ProtectedRoleContent>
-                                    </div>
-                                </li>
+                                        <div className="col">
+                                            <h3>
+                                                <Link className="wd-quiz-link text-decoration-none text-dark"
+                                                    to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/details`}> {/* TODO IMPLEMENT TAKE QUIZ/EDIT QUIZ PAGE BASED ON ROLE */}
+                                                    {quiz.details?.title}
+                                                </Link>
+                                            </h3>
+                                            {!quiz.details?.published ? <span><b>Not Published</b> | </span> : <></>}
+                                            {handleAvailableDates(quiz)}
+                                            <b>Due</b> {quiz.details?.dueDate?.substring(0, 10) ?? "N/A"} | {quiz.details?.points} pts | {quiz.questions?.length || 0} questions
+                                        </div>
+                                        <div className="col-1">
+                                            <div className="float-end">
+                                                {
+                                                    quiz.details?.published
+                                                        ? <GreenCheckmark />
+                                                        : <FaUpload className="text-warning" onClick={() => publishQuiz(quiz._id)} />
+                                                }
+                                            </div>
+                                            <ProtectedRoleContent role="FACULTY">
+                                                <FaTrash className="text-danger me-2 mt-1 float-end" data-bs-toggle="modal" data-bs-target="#wd-delete-quiz-dialog" onClick={() => setQidToDelete(quiz._id)} />
+                                            </ProtectedRoleContent>
+                                        </div>
+                                    </li>
+                                ) : (
+                                    // And here
+                                    <ProtectedRoleContent role="FACULTY">
+                                        <li className={`${!quiz.details?.published ? "unpublished" : ""} wd-lesson list-group-item p-3 ps-1 d-flex`}>
+                                            <div className="col-1">
+                                                <BsGripVertical className="me-2 fs-3" />
+                                                <SlNotebook className="text-success me-3" />
+                                            </div>
+                                            <div className="col">
+                                                <h3>
+                                                    <Link className="wd-quiz-link text-decoration-none text-dark"
+                                                        to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/details`}> {/* TODO IMPLEMENT TAKE QUIZ/EDIT QUIZ PAGE BASED ON ROLE */}
+                                                        {quiz.details?.title}
+                                                    </Link>
+                                                </h3>
+                                                {!quiz.details?.published ? <span><b>Not Published</b> | </span> : <></>}
+                                                <b>Available Until</b> {quiz.details?.availableDate?.substring(0, 10) ?? "N/A"} | <b>Due</b> {quiz.details?.dueDate?.substring(0, 10) ?? "N/A"} | {quiz.details?.points} pts | {quiz.questions?.length || 0} questions
+                                            </div>
+                                            <div className="col-1">
+                                                <div className="float-end">
+                                                    {
+                                                        quiz.details?.published
+                                                            ? <GreenCheckmark />
+                                                            : <FaUpload className="text-warning" onClick={() => publishQuiz(quiz._id)} />
+                                                    }
+                                                </div>
+                                                <ProtectedRoleContent role="FACULTY">
+                                                    <FaTrash className="text-danger me-2 mt-1 float-end" data-bs-toggle="modal" data-bs-target="#wd-delete-quiz-dialog" onClick={() => setQidToDelete(quiz._id)} />
+                                                </ProtectedRoleContent>
+                                            </div>
+                                        </li>
+                                    </ProtectedRoleContent>
+                                )
+
                             ))}
                     </ul>
                 </li>

@@ -75,7 +75,7 @@ export default function DetailsEditor({ quizState, setQuizState }: DetailsEditor
                             id="wd-group"
                             value={quizState.assignmentGroup}
                             onChange={(e) => updateField("assignmentGroup", e.target.value)}
-                            // onChange={(e) => updateField("assignmentGroup", e.target.value)}
+                        // onChange={(e) => updateField("assignmentGroup", e.target.value)}
                         >
                             <option selected value="Quizzes">
                                 QUIZZES
@@ -174,6 +174,21 @@ export default function DetailsEditor({ quizState, setQuizState }: DetailsEditor
                                 <label className="form-check-label" htmlFor="wd-multiple-attempts">
                                     Multiple Attempts
                                 </label>
+                            </div>
+                            <div className="form-group row my-3">
+                                <label htmlFor="wd-how-many-attempts" className="col-sm-4 col-form-label">
+                                    How Many Attempts
+                                </label>
+                                <div className="col-sm-8">
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        name="input-how-many-attempts"
+                                        id="wd-how-many-attempts"
+                                        value={String(quizState.howManyAttempts)}
+                                        onChange={(e) => updateField("howManyAttempts", Number(e.target.value))}
+                                    />
+                                </div>
                             </div>
                             <div className="form-check my-3">
                                 <input

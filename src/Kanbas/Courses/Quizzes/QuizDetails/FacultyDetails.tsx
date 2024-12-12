@@ -120,6 +120,17 @@ export default function FacultyDetails() {
                 <div className="row">
                     <div className="col-4">
                         <label className="form-label float-end">
+                            <b>How Many Attempts</b>
+                        </label>
+                    </div>
+                    <div className="col-4">
+                        <label className="form-label">{String(existingQuiz.details.howManyAttempts)}</label>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-4">
+                        <label className="form-label float-end">
                             <b>View Responses</b>
                         </label>
                     </div>

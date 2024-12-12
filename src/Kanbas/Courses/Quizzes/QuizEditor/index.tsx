@@ -39,6 +39,7 @@ export default function QuizEditor() {
         shuffleAnswers: false,
         timeLimit: 20,
         multipleAttempts: false,
+        howManyAttempts: 1,
         showCorrectAnswers: true,
         accessCode: "",
         oneQuestionAtATime: false,
@@ -67,6 +68,7 @@ export default function QuizEditor() {
                 shuffleAnswers: existingQuiz.details?.shuffleAnswers || false,
                 timeLimit: existingQuiz.details?.timeLimit || 20,
                 multipleAttempts: existingQuiz.details?.multipleAttempts  ||  false,
+                howManyAttempts: existingQuiz.details?.howManyAttempts || 1,
                 showCorrectAnswers: existingQuiz.details?.showCorrectAnswers || true,
                 accessCode: existingQuiz.details?.accessCode || "",
                 oneQuestionAtATime: existingQuiz.details?.oneQuestionAtATime || false,
@@ -118,6 +120,7 @@ export default function QuizEditor() {
                 shuffleAnswers: quizState.shuffleAnswers,
                 timeLimit: quizState.timeLimit,
                 multipleAttempts: quizState.multipleAttempts,
+                howManyAttempts: quizState.howManyAttempts,
                 showCorrectAnswers: quizState.showCorrectAnswers,
                 accessCode: quizState.accessCode,
                 oneQuestionAtATime: quizState.oneQuestionAtATime,
@@ -139,7 +142,7 @@ export default function QuizEditor() {
             // dispatch(addQuiz(newQuiz));
         // }
 
-        navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/details`);
     };
 
     return (
