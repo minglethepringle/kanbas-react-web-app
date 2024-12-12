@@ -65,7 +65,7 @@ export default function StudentDetails() {
                 <div className="col">
                     <label className="form-label">
                         <b className="me-2">Due</b>
-                        {quizDetails?.details?.dueDate.substring(0, 10)}
+                        {quizDetails?.details?.dueDate?.substring(0, 10)}
                     </label>
                 </div>
                 <div className="col">
@@ -83,7 +83,7 @@ export default function StudentDetails() {
                 <div className="col">
                     <label className="form-label">
                         <b className="me-2">Available</b>
-                        {quizDetails?.details?.availableDate.substring(0, 10)}
+                        {quizDetails?.details?.availableDate?.substring(0, 10)}
                     </label>
                 </div>
                 <div className="col">
