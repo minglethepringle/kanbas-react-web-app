@@ -37,3 +37,12 @@ body * {
 .wd-lesson {
     border-left: 3px solid green !important;
 }
+
+.wd-lesson.unpublished {
+    border-left: 3px solid gray !important;
+    color: gray;
+}
+
+.wd-lesson.unpublished .wd-quiz-link {
+    color: gray !important;
+}

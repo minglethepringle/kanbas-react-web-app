@@ -45,8 +45,21 @@ export const createAssignmentForCourse = async (courseId: string, assignment: an
     );
     return response.data;
 }
-
+// a6
 export const findUsersForCourse = async (courseId: string) => {
     const response = await axios.get(`${COURSES_API}/${courseId}/users`);
     return response.data;
 };
+// Quizzes
+export const findQuizzesForCourse = async (courseId: string) => {
+    const response = await axios
+        .get(`${COURSES_API}/${courseId}/quizzes`);
+    return response.data;
+}
+export const createQuizForCourse = async (courseId: string, quiz: any) => {
+    const response = await axiosWithCredentials.post(
+        `${COURSES_API}/${courseId}/quizzes`,
+        quiz
+    );
+    return response.data;
+}
