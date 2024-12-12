@@ -47,6 +47,11 @@ export default function Quizzes() {
         dispatch(updateQuiz(updatedQuiz));
     }
 
+    const unpublishQuiz = async (qid: string) => {
+        const updatedQuiz = await quizzesClient.unpublishQuiz(qid);
+        dispatch(updateQuiz(updatedQuiz));
+    }
+
     return (
         <div id="wd-quizzes">
             <div className="row mb-4">
@@ -89,23 +94,33 @@ export default function Quizzes() {
                                     <div className="col">
                                         <h3>
                                             <Link className="wd-quiz-link text-decoration-none text-dark"
-                                                to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/details`}> {/* TODO IMPLEMENT TAKE QUIZ/EDIT QUIZ PAGE BASED ON ROLE */}
+                                                to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/details`}>
                                                 {quiz.details?.title}
                                             </Link>
                                         </h3>
                                         {!quiz.details?.published ? <span><b>Not Published</b> | </span> : <></>}
                                         <b>Available Until</b> {quiz.details?.availableDate?.substring(0, 10) ?? "N/A"} | <b>Due</b> {quiz.details?.dueDate?.substring(0, 10) ?? "N/A"} | {quiz.details?.points} pts | {quiz.questions?.length || 0} questions
                                     </div>
-                                    <div className="col-1">
-                                        <div className="float-end">
-                                            {
-                                                quiz.details?.published
-                                                ? <GreenCheckmark />
-                                                : <FaUpload className="text-warning" onClick={() => publishQuiz(quiz._id)}/>
-                                            }
-                                        </div>
+                                    <div className="col-1 d-flex flex-col align-items-center">
+                                        {
+                                            quiz.details?.published
+                                            && <GreenCheckmark />
+                                        }
                                         <ProtectedRoleContent role="FACULTY">
-                                            <FaTrash className="text-danger me-2 mt-1 float-end" data-bs-toggle="modal" data-bs-target="#wd-delete-quiz-dialog" onClick={() => setQidToDelete(quiz._id)} />
+                                            <div className="dropdown mx-3">
+                                                <button className="btn btn-secondary" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <IoEllipsisVertical />
+                                                </button>
+                                                <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                                    <li><button className="dropdown-item" type="button" onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`)}>Edit</button></li>
+                                                    <li><button className="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#wd-delete-quiz-dialog" onClick={() => setQidToDelete(quiz._id)}>Delete</button></li>
+                                                    {
+                                                        !quiz.details?.published
+                                                            ? <li><button className="dropdown-item" type="button" onClick={() => publishQuiz(quiz._id)}>Publish</button></li>
+                                                            : <li><button className="dropdown-item" type="button" onClick={() => unpublishQuiz(quiz._id)}>Unpublish</button></li>
+                                                    }
+                                                </ul>
+                                            </div>
                                         </ProtectedRoleContent>
                                     </div>
                                 </li>

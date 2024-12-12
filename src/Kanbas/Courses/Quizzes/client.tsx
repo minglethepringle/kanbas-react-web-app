@@ -42,6 +42,13 @@ export const publishQuiz = async (quizId: string) => {
     return response.data;
 }
 
+export const unpublishQuiz = async (quizId: string) => {
+    const response = await axiosWithCredentials.put(`${QUIZZES_API}/${quizId}/unpublish`);
+    return response.data;
+}
+
+
+
 // export const createQuestionForQuiz = async (quizId: string, question: any) => {
 //     const response = await axiosWithCredentials.post(
 //         `${QUIZZES_API}/${quizId}/questions`,
